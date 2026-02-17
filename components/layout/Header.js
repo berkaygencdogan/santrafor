@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import MegaMenu from "./MegaMenu";
 import { FaFacebookF, FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
 import LiveTicker from "./LiveTicker";
+import Link from "next/link";
 
 export default function Header() {
   const [open, setOpen] = useState(null); // "menu" | "futbol" | "basketbol"
@@ -48,18 +49,27 @@ export default function Header() {
         <div className="max-w-[1400px] mx-auto px-4 h-[88px] flex items-center justify-between">
           {/* LEFT NAV */}
           <nav className="hidden md:flex gap-6 text-sm font-semibold tracking-wide">
-            <a className="hover:text-yellow-400" href="#">
+            <Link href="/category/besiktas" className="hover:text-yellow-400">
               Beşiktaş
-            </a>
-            <a className="hover:text-yellow-400" href="#">
+            </Link>
+
+            <Link href="/category/fenerbahce" className="hover:text-yellow-400">
               Fenerbahçe
-            </a>
-            <a className="hover:text-yellow-400" href="#">
+            </Link>
+
+            <Link
+              href="/category/galatasaray"
+              className="hover:text-yellow-400"
+            >
               Galatasaray
-            </a>
-            <a className="hover:text-yellow-400" href="#">
+            </Link>
+
+            <Link
+              href="/category/trabzonspor"
+              className="hover:text-yellow-400"
+            >
               Trabzonspor
-            </a>
+            </Link>
           </nav>
 
           {/* LOGO (X ortalı, Y en üstte) */}

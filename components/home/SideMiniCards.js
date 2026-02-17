@@ -24,8 +24,6 @@ export default function SideMiniCards({ posts = [] }) {
           </div>
         </div>
       ))}
-
-      <div className="h-[220px] rounded-xl bg-white border border-gray-200" />
     </aside>
   );
 }

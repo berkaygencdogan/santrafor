@@ -1,4 +1,4 @@
-export default function Agenda({ posts = [] }) {
+export default function Agenda({ posts = [], title }) {
   if (!posts.length) return null;
 
   return (
@@ -6,7 +6,7 @@ export default function Agenda({ posts = [] }) {
       <div className="max-w-[1400px] mx-auto px-4">
         <div className="flex items-center gap-3 mb-6">
           <span className="w-1 h-5 bg-red-500 rounded" />
-          <h2 className="font-extrabold tracking-wide">FOTOMAÇ GÜNDEM</h2>
+          <h2 className="font-extrabold tracking-wide">{title}</h2>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">

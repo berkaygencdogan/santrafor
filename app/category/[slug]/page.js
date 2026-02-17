@@ -1,34 +1,40 @@
+import CategoryGrid from "@/components/category/CategoryGrid";
 import CategorySlider from "@/components/category/CategorySlider";
+import CategoryTopNews from "@/components/category/CategoryTopNews";
+import MatchStats from "@/components/category/MatchStats";
+import PlayerStats from "@/components/category/PlayerStats";
 import TeamSquad from "@/components/category/TeamSquad";
 import Link from "next/link";
+
+const titles = [
+  "Transfer bombası patladı!",
+  "Derbi öncesi flaş gelişme",
+  "Yıldız oyuncudan açıklama",
+  "Teknik direktörden kritik karar",
+  "Son dakika: kadro belli oldu",
+];
+
+const generatePosts = (prefix, count = 18) =>
+  Array.from({ length: count }).map((_, i) => ({
+    id: i + 1,
+    title: titles[i % titles.length],
+    slug: `${prefix}-haber-${i + 1}`,
+    image: `https://picsum.photos/800/50${i % 10}?${prefix}${i}`,
+    date: `${10 + i} Şubat 2026`,
+  }));
 
 const mockCategories = [
   {
     slug: "galatasaray",
     name: "Galatasaray",
     description: "Galatasaray ile ilgili son haberler",
-    posts: [
-      {
-        id: 1,
-        title: "Beşiktaş-G.Saray derbisinin tarihi belli oldu!",
-        slug: "besiktas-gsaray-derbi",
-        image: "https://picsum.photos/800/500",
-        date: "17 Şubat 2026",
-      },
-      {
-        id: 2,
-        title: "Galatasaray transfer bombası patlatıyor",
-        slug: "galatasaray-transfer",
-        image: "https://picsum.photos/800/501",
-        date: "16 Şubat 2026",
-      },
-    ],
+    posts: generatePosts("galatasaray", 20),
   },
   {
     slug: "fenerbahce",
     name: "Fenerbahçe",
     description: "Fenerbahçe haberleri",
-    posts: [],
+    posts: generatePosts("fenerbahce", 20),
   },
 ];
 
@@ -135,6 +141,13 @@ export default async function CategoryPage({ params }) {
           <TeamSquad />
         </div>
       </div>
+      <MatchStats />
+
+      <CategoryTopNews posts={category.posts} />
+
+      <PlayerStats />
+
+      <CategoryGrid posts={category.posts} />
     </div>
   );
 }
