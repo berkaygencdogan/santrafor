@@ -6,60 +6,96 @@ export default function Hero({ sliders = [], featured = [] }) {
   const [active, setActive] = useState(0);
 
   const current = sliders[active];
-
   if (!sliders.length) return null;
 
   return (
-    <section className="max-w-7xl mx-auto px-4 mt-6 grid md:grid-cols-3 gap-4">
-      {/* SOL BÜYÜK SLIDER */}
-      <div className="md:col-span-2 relative">
-        <div className="relative h-[350px] md:h-[420px] overflow-hidden rounded-xl">
-          <img src={current.image_url} className="w-full h-full object-cover" />
+    <section className="w-full mt-4">
+      {/* FULL WIDTH WRAPPER */}
+      <div className="w-full bg-[#0f172a] py-6">
+        {/* CONTENT CENTER */}
+        <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-3 gap-6">
+          {/* SOL SLIDER */}
+          <div className="lg:col-span-2">
+            <div className="relative h-[500px] md:h-[600px] rounded-2xl overflow-hidden">
+              <img src={current.image} className="w-full h-full object-cover" />
 
-          {/* overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+              {/* overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-          {/* text */}
-          <div className="absolute bottom-0 p-5 text-white">
-            <h2 className="text-xl md:text-2xl font-bold">{current.title}</h2>
-          </div>
-        </div>
+              {/* TEXT */}
+              <div className="absolute bottom-8 left-8 right-8 text-white">
+                <span className="bg-yellow-400 text-black px-3 py-1 text-xs font-bold rounded">
+                  DIŞ HABER
+                </span>
 
-        {/* DOTS */}
-        <div className="flex gap-2 mt-2 justify-center">
-          {sliders.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActive(i)}
-              className={`w-3 h-3 rounded-full ${
-                i === active ? "bg-red-600" : "bg-gray-300"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
+                <h2 className="text-4xl md:text-5xl font-extrabold mt-4 leading-tight">
+                  {current.title}
+                </h2>
+              </div>
 
-      {/* SAĞ KARTLAR */}
-      <div className="flex flex-col gap-4">
-        {featured.slice(0, 2).map((post) => (
-          <div
-            key={post.id}
-            className="relative h-[165px] rounded-xl overflow-hidden"
-          >
-            <img
-              src={post.cover_image}
-              className="w-full h-full object-cover"
-            />
-
-            <div className="absolute inset-0 bg-black/50" />
-
-            <div className="absolute bottom-0 p-3 text-white">
-              <h3 className="text-sm font-semibold leading-tight">
-                {post.title}
-              </h3>
+              {/* PAGINATION */}
+              <div className="absolute bottom-6 left-8 flex gap-4 text-white text-sm">
+                {sliders.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActive(i)}
+                    className={`${
+                      i === active ? "text-red-500 font-bold" : "text-white/60"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        ))}
+
+          {/* SAĞ */}
+          <div className="flex flex-col gap-4">
+            {/* ÜST */}
+            {featured[0] && (
+              <div className="relative h-[260px] rounded-xl overflow-hidden">
+                <img
+                  src={featured[0].image}
+                  className="w-full h-full object-cover"
+                />
+
+                <div className="absolute inset-0 bg-black/50" />
+
+                <div className="absolute bottom-4 left-4 right-4 text-white">
+                  <span className="bg-red-600 px-2 py-1 text-xs font-bold">
+                    ÖNE ÇIKAN
+                  </span>
+
+                  <h3 className="text-base font-bold mt-2 leading-tight">
+                    {featured[0].title}
+                  </h3>
+                </div>
+              </div>
+            )}
+
+            {/* ALT GRID */}
+            <div className="grid grid-cols-3 gap-3">
+              {featured.slice(1, 4).map((item) => (
+                <div
+                  key={item.id}
+                  className="relative h-[110px] rounded-lg overflow-hidden"
+                >
+                  <img
+                    src={item.image}
+                    className="w-full h-full object-cover"
+                  />
+
+                  <div className="absolute inset-0 bg-black/40" />
+
+                  <div className="absolute bottom-1 left-1 right-1 text-white text-xs font-semibold leading-tight">
+                    {item.title}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
