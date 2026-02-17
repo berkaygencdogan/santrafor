@@ -1,161 +1,137 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { FaFacebookF, FaTwitter, FaLinkedinIn, FaSearch } from "react-icons/fa";
+import { useEffect, useRef, useState } from "react";
+import MegaMenu from "./MegaMenu";
+import { FaFacebookF, FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
+import LiveTicker from "./LiveTicker";
+
 export default function Header() {
-  const [activeMenu, setActiveMenu] = useState(null);
-  const timeoutRef = useRef(null);
+  const [open, setOpen] = useState(null); // "menu" | "futbol" | "basketbol"
+  const closeTimer = useRef(null);
 
-  // Menüye girince kapanmayı iptal et
-  const handleEnter = (menu) => {
-    clearTimeout(timeoutRef.current);
-    setActiveMenu(menu);
+  const safeOpen = (key) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpen(key);
   };
 
-  // Menüden çıkınca gecikmeli kapat
-  const handleLeave = () => {
-    s;
-    timeoutRef.current = setTimeout(() => {
-      setActiveMenu(null);
-    }, 200); // 200ms sweet spot
+  const safeClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpen(null), 180);
   };
+
+  useEffect(() => {
+    return () => closeTimer.current && clearTimeout(closeTimer.current);
+  }, []);
 
   return (
     <header className="w-full bg-[#1f1f2e] text-white relative z-50">
-      {/* NAV WRAPPER */}
-      <div
-        className="relative"
-        onMouseLeave={handleLeave}
-        onMouseEnter={() => clearTimeout(timeoutRef.current)}
-      >
-        <div className="border-b border-white/10 text-sm h-15">
-          <div className="max-w-7xl mx-auto h-full px-4 py-2 flex justify-between items-center">
-            <div className="flex gap-4 text-gray-300">
-              <FaFacebookF className="cursor-pointer hover:text-yellow-400" />
-              <FaTwitter className="cursor-pointer hover:text-yellow-400" />
-              <FaLinkedinIn className="cursor-pointer hover:text-yellow-400" />
+      {/* TOP BAR */}
+      <div className="border-b border-white/10 text-sm">
+        <div className="max-w-[1400px] h-20 mx-auto px-4 flex items-center gap-6">
+          {/* SOL ICON */}
+          <div className="flex items-center gap-4 text-white/70">
+            <div className="flex items-center gap-3">
+              <FaFacebookF className="text-lg cursor-pointer hover:text-white transition" />
+              <FaXTwitter className="text-lg cursor-pointer hover:text-white transition" />
+              <FaLinkedinIn className="text-lg cursor-pointer hover:text-white transition" />
             </div>
+
+            <div className="h-10 w-[1px] bg-white/20 ml-2" />
           </div>
+
+          {/* TICKER */}
+          <LiveTicker />
         </div>
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
+      </div>
+      {/* MAIN NAV */}
+      <div className="relative">
+        <div className="max-w-[1400px] mx-auto px-4 h-[88px] flex items-center justify-between">
+          {/* LEFT NAV */}
           <nav className="hidden md:flex gap-6 text-sm font-semibold tracking-wide">
-            <a href="#" className="hover:text-yellow-400">
+            <a className="hover:text-yellow-400" href="#">
               Beşiktaş
             </a>
-            <a href="#" className="hover:text-yellow-400">
+            <a className="hover:text-yellow-400" href="#">
               Fenerbahçe
             </a>
-            <a href="#" className="hover:text-yellow-400">
+            <a className="hover:text-yellow-400" href="#">
               Galatasaray
             </a>
-            <a href="#" className="hover:text-yellow-400">
+            <a className="hover:text-yellow-400" href="#">
               Trabzonspor
             </a>
           </nav>
-          <div className="absolute left-1/2 -translate-x-1/2 -top-4">
+
+          {/* LOGO (X ortalı, Y en üstte) */}
+          <div className="absolute left-1/2 -translate-x-1/2 -top-11">
             <img
               src="https://i.hizliresim.com/8qjtfmq.png"
-              className="w-[180px]"
+              alt="Santrafor"
+              className="object-contain"
+              width={150}
             />
           </div>
-          <nav className="flex gap-6 text-sm font-semibold">
-            <div onMouseEnter={() => handleEnter("menu")}>Menü</div>
 
-            <div onMouseEnter={() => handleEnter("futbol")}>Futbol</div>
+          {/* RIGHT NAV */}
+          <nav className="hidden md:flex gap-6 text-sm font-semibold tracking-wide items-center">
+            {/* MENÜ */}
+            <div
+              className="relative"
+              onMouseEnter={() => safeOpen("menu")}
+              onMouseLeave={safeClose}
+            >
+              <button
+                className={`hover:text-yellow-400 ${open === "menu" ? "text-yellow-400" : ""}`}
+              >
+                Menü
+              </button>
+            </div>
 
-            <div onMouseEnter={() => handleEnter("basketbol")}>Basketbol</div>
-            <a>Yazarlar</a>
+            {/* FUTBOL */}
+            <div
+              className="relative"
+              onMouseEnter={() => safeOpen("futbol")}
+              onMouseLeave={safeClose}
+            >
+              <button
+                className={`hover:text-yellow-400 ${open === "futbol" ? "text-yellow-400" : ""}`}
+              >
+                Futbol
+              </button>
+            </div>
+
+            {/* BASKETBOL */}
+            <div
+              className="relative"
+              onMouseEnter={() => safeOpen("basketbol")}
+              onMouseLeave={safeClose}
+            >
+              <button
+                className={`hover:text-yellow-400 ${open === "basketbol" ? "text-yellow-400" : ""}`}
+              >
+                Basketbol
+              </button>
+            </div>
+
+            <a className="hover:text-yellow-400" href="#">
+              Yazarlar
+            </a>
           </nav>
         </div>
 
-        {/* ================= DROPDOWN ================= */}
+        {/* MEGA MENU PANEL (hover içinde gezebilirsin) */}
         <div
-          className={`
-            absolute left-0 w-full bg-[#16213a] border-t border-red-500
-            transition-all duration-300 ease-out
-            ${activeMenu ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-3 invisible"}
+          className={`absolute left-0 right-0 top-full bg-[#0f172a] border-t border-white/10
+            transition-all duration-200 ease-out
+            ${open ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"}
           `}
+          onMouseEnter={() => open && safeOpen(open)}
+          onMouseLeave={safeClose}
         >
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            {/* MENU */}
-            {activeMenu === "menu" && (
-              <div className="grid grid-cols-3 gap-10">
-                <div>
-                  <h3 className="text-green-400 mb-3">DİĞER SPORLAR</h3>
-                  <ul className="space-y-2 text-gray-300">
-                    <li>Espor</li>
-                    <li>Golf</li>
-                    <li>Tenis</li>
-                    <li>Yüzme</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-green-400 mb-3">ÜYELİK</h3>
-                  <ul className="space-y-2 text-gray-300">
-                    <li>Üye Ol</li>
-                    <li>Giriş</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-green-400 mb-3">SOSYAL</h3>
-                  <div className="flex gap-3">
-                    <div className="w-8 h-8 bg-blue-500 rounded"></div>
-                    <div className="w-8 h-8 bg-red-500 rounded"></div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* FUTBOL */}
-            {activeMenu === "futbol" && (
-              <div className="grid grid-cols-3 gap-10">
-                <div>
-                  <h3 className="text-green-400 mb-3">LİGLER</h3>
-                  <ul className="space-y-2 text-gray-300">
-                    <li>Süper Lig</li>
-                    <li>Premier Lig</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-green-400 mb-3">TAKIMLAR</h3>
-                  <ul className="space-y-2 text-gray-300">
-                    <li>Galatasaray</li>
-                    <li>Fenerbahçe</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-green-400 mb-3">KUPALAR</h3>
-                  <ul className="space-y-2 text-gray-300">
-                    <li>Şampiyonlar Ligi</li>
-                  </ul>
-                </div>
-              </div>
-            )}
-
-            {/* BASKET */}
-            {activeMenu === "basketbol" && (
-              <div className="grid grid-cols-2 gap-10">
-                <div>
-                  <h3 className="text-green-400 mb-3">LİGLER</h3>
-                  <ul className="space-y-2 text-gray-300">
-                    <li>NBA</li>
-                    <li>EuroLeague</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-green-400 mb-3">MİLLİ TAKIM</h3>
-                  <ul className="space-y-2 text-gray-300">
-                    <li>Erkek</li>
-                    <li>Kadın</li>
-                  </ul>
-                </div>
-              </div>
-            )}
+          <div className="max-w-[1400px] mx-auto px-4 py-8">
+            {open === "menu" && <MegaMenu type="menu" />}
+            {open === "futbol" && <MegaMenu type="futbol" />}
+            {open === "basketbol" && <MegaMenu type="basketbol" />}
           </div>
         </div>
       </div>

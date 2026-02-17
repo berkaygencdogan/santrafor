@@ -1,98 +1,100 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Hero({ sliders = [], featured = [] }) {
   const [active, setActive] = useState(0);
 
-  const current = sliders[active];
+  useEffect(() => {
+    if (!sliders.length) return;
+    const t = setInterval(() => {
+      setActive((p) => (p + 1) % sliders.length);
+    }, 6000);
+    return () => clearInterval(t);
+  }, [sliders.length]);
+
   if (!sliders.length) return null;
+  const current = sliders[active];
 
   return (
-    <section className="w-full mt-4">
-      {/* FULL WIDTH WRAPPER */}
-      <div className="w-full bg-[#0f172a] py-6">
-        {/* CONTENT CENTER */}
-        <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-3 gap-6">
-          {/* SOL SLIDER */}
-          <div className="lg:col-span-2">
-            <div className="relative h-[500px] md:h-[600px] rounded-2xl overflow-hidden">
-              <img src={current.image} className="w-full h-full object-cover" />
+    <section className="bg-[#0b1220]">
+      <div className="max-w-[1400px] mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-6">
+          {/* SOL BÜYÜK */}
+          <div className="relative rounded-2xl overflow-hidden">
+            <img
+              src={current.image}
+              className="w-full h-[520px] object-cover"
+              alt={current.title}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-              {/* overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <span className="absolute left-6 bottom-24 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded">
+              DIŞ HABER
+            </span>
 
-              {/* TEXT */}
-              <div className="absolute bottom-8 left-8 right-8 text-white">
-                <span className="bg-yellow-400 text-black px-3 py-1 text-xs font-bold rounded">
-                  DIŞ HABER
-                </span>
+            <h2 className="absolute left-6 bottom-8 right-6 text-white font-extrabold text-4xl leading-tight">
+              {current.title}
+            </h2>
 
-                <h2 className="text-4xl md:text-5xl font-extrabold mt-4 leading-tight">
-                  {current.title}
-                </h2>
-              </div>
-
-              {/* PAGINATION */}
-              <div className="absolute bottom-6 left-8 flex gap-4 text-white text-sm">
-                {sliders.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActive(i)}
-                    className={`${
-                      i === active ? "text-red-500 font-bold" : "text-white/60"
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
+            {/* dots */}
+            <div className="absolute left-6 bottom-2 flex gap-3">
+              {sliders.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActive(i)}
+                  className={`h-2 w-2 rounded-full transition ${
+                    i === active ? "bg-red-500 scale-125" : "bg-white/40"
+                  }`}
+                  aria-label={`slide-${i}`}
+                />
+              ))}
             </div>
           </div>
 
           {/* SAĞ */}
-          <div className="flex flex-col gap-4">
-            {/* ÜST */}
+          <div className="rounded-2xl bg-[#0f172a] p-5">
+            {/* üst featured büyük */}
             {featured[0] && (
-              <div className="relative h-[260px] rounded-xl overflow-hidden">
+              <div className="relative rounded-xl overflow-hidden">
                 <img
                   src={featured[0].image}
-                  className="w-full h-full object-cover"
+                  className="w-full h-[240px] object-cover"
+                  alt={featured[0].title}
                 />
-
-                <div className="absolute inset-0 bg-black/50" />
-
-                <div className="absolute bottom-4 left-4 right-4 text-white">
-                  <span className="bg-red-600 px-2 py-1 text-xs font-bold">
-                    ÖNE ÇIKAN
-                  </span>
-
-                  <h3 className="text-base font-bold mt-2 leading-tight">
-                    {featured[0].title}
-                  </h3>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                <span className="absolute left-3 bottom-12 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                  ÖNE ÇIKAN
+                </span>
+                <h3 className="absolute left-3 right-3 bottom-3 text-white font-bold">
+                  {featured[0].title}
+                </h3>
               </div>
             )}
 
-            {/* ALT GRID */}
-            <div className="grid grid-cols-3 gap-3">
-              {featured.slice(1, 4).map((item) => (
-                <div
-                  key={item.id}
-                  className="relative h-[110px] rounded-lg overflow-hidden"
-                >
+            {/* alt küçük 3 */}
+            <div className="grid grid-cols-3 gap-3 mt-4">
+              {featured.slice(1, 4).map((p) => (
+                <div key={p.id} className="relative rounded-lg overflow-hidden">
                   <img
-                    src={item.image}
-                    className="w-full h-full object-cover"
+                    src={p.image}
+                    className="w-full h-[110px] object-cover"
+                    alt={p.title}
                   />
-
-                  <div className="absolute inset-0 bg-black/40" />
-
-                  <div className="absolute bottom-1 left-1 right-1 text-white text-xs font-semibold leading-tight">
-                    {item.title}
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <p className="absolute left-2 right-2 bottom-2 text-[11px] text-white font-semibold leading-snug">
+                    {p.title}
+                  </p>
                 </div>
               ))}
+            </div>
+
+            {/* ekstra alan yerine bunu koy */}
+            <div className="mt-5 grid grid-cols-1 gap-4">
+              {/* REKLAM / WIDGET ALANI */}
+              <div className="h-[90px] rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold">
+                REKLAM ALANI
+              </div>
             </div>
           </div>
         </div>

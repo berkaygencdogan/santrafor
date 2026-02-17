@@ -4,7 +4,11 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-10 grid md:grid-cols-3 gap-6">
         {/* LOGO */}
         <div>
-          <h2 className="text-xl font-bold text-red-500">SANTRAFOR</h2>
+          <img
+            src="https://i.hizliresim.com/8qjtfmq.png"
+            alt="Santrafor Logo"
+            className="w-32"
+          />
           <p className="text-gray-400 mt-2">
             Güncel spor haberleri, analizler ve transfer gelişmeleri.
           </p>

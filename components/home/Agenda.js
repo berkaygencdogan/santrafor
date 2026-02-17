@@ -1,0 +1,47 @@
+export default function Agenda({ posts = [] }) {
+  if (!posts.length) return null;
+
+  return (
+    <section className="w-full bg-[#0f172a] text-white py-10 mt-10">
+      <div className="max-w-[1400px] mx-auto px-4">
+        <div className="flex items-center gap-3 mb-6">
+          <span className="w-1 h-5 bg-red-500 rounded" />
+          <h2 className="font-extrabold tracking-wide">FOTOMAÇ GÜNDEM</h2>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 relative rounded-2xl overflow-hidden">
+            <img
+              src={posts[0].image}
+              className="w-full h-[420px] object-cover"
+              alt={posts[0].title}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+            <h3 className="absolute bottom-4 left-4 right-4 font-extrabold text-2xl">
+              {posts[0].title}
+            </h3>
+          </div>
+
+          <div className="space-y-4">
+            {posts.slice(1, 5).map((item) => (
+              <div
+                key={item.id}
+                className="relative rounded-xl overflow-hidden"
+              >
+                <img
+                  src={item.image}
+                  className="w-full h-[120px] object-cover"
+                  alt={item.title}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                <p className="absolute bottom-2 left-2 right-2 text-sm font-semibold">
+                  {item.title}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
