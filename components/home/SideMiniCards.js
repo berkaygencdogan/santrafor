@@ -1,7 +1,12 @@
 export default function SideMiniCards({ posts = [] }) {
   return (
     <aside className="space-y-3 sticky top-4">
-      <div className="h-[140px] rounded-xl bg-white border border-gray-200" />
+      <div className=" grid grid-cols-1 gap-4">
+        {/* REKLAM / WIDGET ALANI */}
+        <div className="h-[120px] rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold">
+          REKLAM ALANI
+        </div>
+      </div>
 
       {posts.map((item) => (
         <div
