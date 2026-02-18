@@ -34,3 +34,60 @@ body {
 .animate-slideLeft {
   animation: slideLeft 0.5s ease;
 }
+
+@keyframes zoomOutLeft {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateX(-100px);
+  }
+}
+
+@keyframes zoomOutRight {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateX(100px);
+  }
+}
+
+@keyframes zoomInLeft {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+@keyframes zoomInRight {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateX(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+.animate-zoomOutLeft {
+  animation: zoomOutLeft 0.3s forwards;
+}
+.animate-zoomOutRight {
+  animation: zoomOutRight 0.3s forwards;
+}
+.animate-zoomInLeft {
+  animation: zoomInLeft 0.3s forwards;
+}
+.animate-zoomInRight {
+  animation: zoomInRight 0.3s forwards;
+}
