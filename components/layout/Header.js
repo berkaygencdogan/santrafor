@@ -5,6 +5,7 @@ import MegaMenu from "./MegaMenu";
 import { FaFacebookF, FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
 import LiveTicker from "./LiveTicker";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 export default function Header() {
   const [open, setOpen] = useState(null); // "menu" | "futbol" | "basketbol"
@@ -19,6 +20,9 @@ export default function Header() {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     closeTimer.current = setTimeout(() => setOpen(null), 180);
   };
+  const LiveTicker = dynamic(() => import("./LiveTicker"), {
+    ssr: false,
+  });
 
   useEffect(() => {
     return () => closeTimer.current && clearTimeout(closeTimer.current);
@@ -49,25 +53,19 @@ export default function Header() {
         <div className="max-w-[1400px] mx-auto px-4 h-[88px] flex items-center justify-between">
           {/* LEFT NAV */}
           <nav className="hidden md:flex gap-6 text-sm font-semibold tracking-wide">
-            <Link href="/category/besiktas" className="hover:text-yellow-400">
+            <Link href="/besiktas/futbol" className="hover:text-yellow-400">
               Beşiktaş
             </Link>
 
-            <Link href="/category/fenerbahce" className="hover:text-yellow-400">
+            <Link href="/fenerbahce/futbol" className="hover:text-yellow-400">
               Fenerbahçe
             </Link>
 
-            <Link
-              href="/category/galatasaray"
-              className="hover:text-yellow-400"
-            >
+            <Link href="/galatasaray/futbol" className="hover:text-yellow-400">
               Galatasaray
             </Link>
 
-            <Link
-              href="/category/trabzonspor"
-              className="hover:text-yellow-400"
-            >
+            <Link href="/trabzonspor/futbol" className="hover:text-yellow-400">
               Trabzonspor
             </Link>
           </nav>
@@ -106,7 +104,7 @@ export default function Header() {
               <button
                 className={`hover:text-yellow-400 ${open === "futbol" ? "text-yellow-400" : ""}`}
               >
-                Futbol
+                <Link href="/futbol">Futbol</Link>
               </button>
             </div>
 
@@ -119,13 +117,13 @@ export default function Header() {
               <button
                 className={`hover:text-yellow-400 ${open === "basketbol" ? "text-yellow-400" : ""}`}
               >
-                Basketbol
+                <Link href="/basketbol">Basketbol</Link>
               </button>
             </div>
 
-            <a className="hover:text-yellow-400" href="#">
+            <Link href="/author" className="hover:text-yellow-400">
               Yazarlar
-            </a>
+            </Link>
           </nav>
         </div>
 

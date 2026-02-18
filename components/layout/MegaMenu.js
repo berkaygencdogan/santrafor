@@ -1,97 +1,58 @@
+import { sportsData } from "@/lib/sportsData";
+import Link from "next/link";
+
 export default function MegaMenu({ type }) {
+  /* ================= SAFE DATA ================= */
+  const futbol = sportsData?.futbol || [];
+  const basketbol = sportsData?.basketbol || [];
+  const diger = sportsData?.diger || [];
+
+  /* ================= MENU ================= */
   if (type === "menu") {
     return (
       <div className="grid md:grid-cols-3 gap-8">
         <div>
           <h4 className="text-lime-400 font-bold mb-3">DİĞER SPORLAR</h4>
+
           <div className="grid grid-cols-2 gap-y-2 text-sm text-white/80">
-            <a className="hover:text-white" href="#">
-              Espor
-            </a>
-            <a className="hover:text-white" href="#">
-              Golf
-            </a>
-            <a className="hover:text-white" href="#">
-              Voleybol
-            </a>
-            <a className="hover:text-white" href="#">
-              Cimnastik
-            </a>
-            <a className="hover:text-white" href="#">
-              Motor Sporları
-            </a>
-            <a className="hover:text-white" href="#">
-              Judo
-            </a>
-            <a className="hover:text-white" href="#">
-              Tenis
-            </a>
-            <a className="hover:text-white" href="#">
-              Bilardo
-            </a>
-            <a className="hover:text-white" href="#">
-              Yüzme
-            </a>
-            <a className="hover:text-white" href="#">
-              Diğer
-            </a>
-            <a className="hover:text-white" href="#">
-              Bisiklet
-            </a>
-            <a className="hover:text-white" href="#">
-              Boks
-            </a>
-            <a className="hover:text-white" href="#">
-              Güreş
-            </a>
-            <a className="hover:text-white" href="#">
-              Halter
-            </a>
-            <a className="hover:text-white" href="#">
-              Hentbol
-            </a>
-            <a className="hover:text-white" href="#">
-              At Yarışı
-            </a>
-            <a className="hover:text-white" href="#">
-              Atletizm
-            </a>
+            {diger.leagues.map((item) => (
+              <Link
+                key={item.slug}
+                href={`/diger-sporlar/${item.slug}`}
+                className="hover:text-white"
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
 
           <div className="mt-8 space-y-2 text-sm">
             <div className="text-white font-semibold">
               HANGİ MAÇ HANGİ KANALDA?
             </div>
-            <a className="block text-white/70 hover:text-white" href="#">
-              ARŞİV
-            </a>
-            <a className="block text-white/70 hover:text-white" href="#">
-              10 NUMARA
-            </a>
+
+            <Link href="/" className="block text-white/70 hover:text-white">
+              GÜNLÜK MAÇ LİSTESİ
+            </Link>
           </div>
         </div>
 
         <div>
-          <h4 className="text-white font-bold mb-3">BUGÜNKÜ FOTOMAÇ</h4>
+          <h4 className="text-white font-bold mb-3">SANTRAFOR ÜYESİ MİSİN ?</h4>
+
           <div className="space-y-2 text-sm text-white/80">
-            <a className="block hover:text-white" href="#">
-              ÜYELİK İŞLEMLERİ
-            </a>
-            <a className="block hover:text-white" href="#">
-              Üye Ol
-            </a>
-            <a className="block hover:text-white" href="#">
+            <Link href="/giris" className="block hover:text-white">
               Üye Girişi
-            </a>
+            </Link>
           </div>
 
           <h4 className="text-white font-bold mt-8 mb-3">BİZE ULAŞIN</h4>
+
           <div className="flex gap-2">
-            {["f", "x", "n", "ig", "p", "yt", "rss"].map((k) => (
+            {["f", "x", "in", "ig"].map((k) => (
               <div
                 key={k}
                 className="w-9 h-9 rounded flex items-center justify-center bg-white/10 hover:bg-white/20 transition cursor-pointer"
-                title={k.toUpperCase()}
               >
                 <span className="text-xs font-bold">{k.toUpperCase()}</span>
               </div>
@@ -106,6 +67,7 @@ export default function MegaMenu({ type }) {
     );
   }
 
+  /* ================= BASKETBOL ================= */
   if (type === "basketbol") {
     return (
       <div className="grid md:grid-cols-2 gap-10">
@@ -113,33 +75,27 @@ export default function MegaMenu({ type }) {
           <h4 className="text-lime-400 font-bold mb-3">
             LİGLER & ORGANİZASYONLAR
           </h4>
+
           <div className="space-y-2 text-sm text-white/80">
-            <a className="block hover:text-white" href="#">
-              TÜRKİYE BASKETBOL LİGİ
-            </a>
-            <a className="block hover:text-white" href="#">
-              KADINLAR BASKETBOL LİGİ
-            </a>
-            <a className="block hover:text-white" href="#">
-              THY EuroLeague
-            </a>
-            <a className="block hover:text-white" href="#">
-              NBA
-            </a>
-            <a className="block hover:text-white" href="#">
-              DİĞER
-            </a>
+            {basketbol.leagues.map((item) => (
+              <Link
+                key={item.slug}
+                href={`/basketbol/${item.slug}`}
+                className="block hover:text-white"
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
 
-          <h4 className="text-lime-400 font-bold mt-8 mb-3">MİLLİ TAKIMLAR</h4>
-          <div className="space-y-2 text-sm text-white/80">
-            <a className="block hover:text-white" href="#">
-              ERKEK MİLLİ
-            </a>
-            <a className="block hover:text-white" href="#">
-              KADIN MİLLİ
-            </a>
-          </div>
+          <h4 className="text-lime-400 font-bold mt-8 mb-3">DİĞER</h4>
+
+          <Link
+            href="/basketbol/milli"
+            className="block text-sm text-white/80 hover:text-white"
+          >
+            Milli Takımlar
+          </Link>
         </div>
 
         <div className="hidden md:block">
@@ -149,106 +105,76 @@ export default function MegaMenu({ type }) {
     );
   }
 
-  // futbol
-  return (
-    <div className="grid md:grid-cols-3 gap-10">
-      <div>
-        <h4 className="text-lime-400 font-bold mb-3">LİGLER</h4>
-        <div className="space-y-2 text-sm text-white/80">
-          <a className="block hover:text-white" href="#">
-            Süper Lig
-          </a>
-          <a className="block hover:text-white" href="#">
-            TFF 1.Lig
-          </a>
-          <a className="block hover:text-white" href="#">
-            TFF 2.Lig
-          </a>
-          <a className="block hover:text-white" href="#">
-            TFF 3.Lig
-          </a>
-          <a className="block hover:text-white" href="#">
-            İngiltere Premier Lig
-          </a>
-          <a className="block hover:text-white" href="#">
-            İspanya La Liga
-          </a>
-          <a className="block hover:text-white" href="#">
-            İtalya Serie A
-          </a>
-          <a className="block hover:text-white" href="#">
-            Almanya Bundesliga
-          </a>
-          <a className="block hover:text-white" href="#">
-            Fransa Ligue 1
-          </a>
-          <a className="block hover:text-white" href="#">
-            Diğer ligler
-          </a>
-        </div>
-      </div>
+  /* ================= FUTBOL ================= */
+  if (type === "futbol") {
+    return (
+      <div className="grid md:grid-cols-3 gap-10">
+        {/* LİGLER */}
+        <div>
+          <h4 className="text-lime-400 font-bold mb-3">LİGLER</h4>
 
-      <div>
-        <h4 className="text-lime-400 font-bold mb-3">SÜPER LİG</h4>
-        <div className="grid grid-cols-2 gap-y-2 text-sm text-white/80">
-          {[
-            "Corendon Alanyaspor",
-            "Fatih Karagümrük",
-            "Hesap.com Antalyaspor",
-            "Kocaelispor",
-            "Rams Başakşehir",
-            "Gençlerbirliği",
-            "Beşiktaş",
-            "Kasımpaşa",
-            "Fenerbahçe",
-            "Tümosan Konyaspor",
-            "Galatasaray",
-            "Çaykur Rizespor",
-            "Gaziantep FK",
-            "Samsunspor",
-            "Göztepe",
-            "Trabzonspor",
-          ].map((t) => (
-            <a key={t} className="hover:text-white" href="#">
-              {t}
-            </a>
-          ))}
+          <div className="space-y-2 text-sm text-white/80">
+            {futbol.leagues.map((item) => (
+              <Link
+                key={item.slug}
+                href={`/futbol/${item.slug}`}
+                className="block hover:text-white"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
         </div>
 
-        <h4 className="text-lime-400 font-bold mt-8 mb-3">MİLLİ TAKIMLAR</h4>
-        <div className="space-y-2 text-sm text-white/80">
-          <a className="block hover:text-white" href="#">
-            A Milli Futbol Takımı
-          </a>
-          <a className="block hover:text-white" href="#">
-            Diğer Milli Takımlar
-          </a>
-        </div>
-      </div>
+        {/* TAKIMLAR */}
+        <div>
+          <h4 className="text-lime-400 font-bold mb-3">TAKIMLAR</h4>
 
-      <div>
-        <h4 className="text-lime-400 font-bold mb-3">ORGANİZASYONLAR</h4>
-        <div className="space-y-2 text-sm text-white/80">
-          <a className="block hover:text-white" href="#">
-            Dünya Kupası
-          </a>
-          <a className="block hover:text-white" href="#">
-            UEFA Şampiyonlar Ligi
-          </a>
-          <a className="block hover:text-white" href="#">
-            UEFA Avrupa Ligi
-          </a>
-          <a className="block hover:text-white" href="#">
-            Ziraat Türkiye Kupası
-          </a>
-          <a className="block hover:text-white" href="#">
-            Konferans Ligi
-          </a>
-          <a className="block hover:text-white" href="#">
-            Olimpiyatlar
-          </a>
+          <div className="grid grid-cols-2 gap-y-2 text-sm text-white/80">
+            {["besiktas", "fenerbahce", "galatasaray", "trabzonspor"].map(
+              (team) => (
+                <Link
+                  key={team}
+                  href={`/${team}/futbol`}
+                  className="hover:text-white capitalize"
+                >
+                  {team}
+                </Link>
+              ),
+            )}
+          </div>
+
+          <h4 className="text-lime-400 font-bold mt-8 mb-3">MİLLİ TAKIM</h4>
+
+          <Link
+            href="/futbol/milli"
+            className="block text-sm text-white/80 hover:text-white"
+          >
+            A Milli Takım
+          </Link>
+        </div>
+
+        {/* ORGANİZASYON */}
+        <div>
+          <h4 className="text-lime-400 font-bold mb-3">ORGANİZASYONLAR</h4>
+
+          <div className="space-y-2 text-sm text-white/80">
+            {["sampiyonlar-ligi", "avrupa-ligi", "turkiye-kupasi"].map(
+              (org) => (
+                <Link
+                  key={org}
+                  href={`/futbol/${org}`}
+                  className="block hover:text-white capitalize"
+                >
+                  {org.replace("-", " ")}
+                </Link>
+              ),
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 }
