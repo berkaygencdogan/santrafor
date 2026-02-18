@@ -1,4 +1,6 @@
+import StandingsTable from "@/components/ui/StandingsTable";
 import Link from "next/link";
+import { sportsData } from "@/lib/sportsData";
 
 // 🔥 MOCK DATA
 const posts = [
@@ -23,9 +25,8 @@ const posts = [
   },
 ];
 
-export default function PostDetail({ params }) {
-  const { slug } = params;
-
+export default async function PostDetail({ params }) {
+  const { slug } = await params;
   const post = posts.find((p) => p.slug === slug);
 
   if (!post) {
@@ -37,7 +38,7 @@ export default function PostDetail({ params }) {
       {/* HEADER */}
       <div className="max-w-[1200px] mx-auto px-4 py-6 text-sm text-gray-400">
         <Link href="/">Anasayfa</Link> /{" "}
-        <Link href={`/category/${post.category.toLowerCase()}`}>
+        <Link href={`/${post.category.toLowerCase()}/futbol`}>
           {post.category}
         </Link>{" "}
         / <span className="text-white">{post.title}</span>
@@ -75,23 +76,10 @@ export default function PostDetail({ params }) {
         {/* 🟩 SIDEBAR */}
         <div className="w-[320px] hidden lg:block space-y-6">
           <div className="bg-[#111827] p-4 rounded-xl">
-            <h3 className="text-green-400 font-bold mb-4">ÖNE ÇIKANLAR</h3>
-
-            <div className="space-y-3 text-sm">
-              <div>Transfer bombası patlıyor</div>
-              <div>Galatasaray lider</div>
-              <div>Fenerbahçe krizi</div>
-            </div>
-          </div>
-
-          <div className="bg-[#111827] p-4 rounded-xl">
-            <h3 className="text-green-400 font-bold mb-4">PUAN DURUMU</h3>
-
-            <div className="space-y-2 text-sm">
-              <div>1. Galatasaray</div>
-              <div>2. Fenerbahçe</div>
-              <div>3. Beşiktaş</div>
-            </div>
+            <StandingsTable
+              standings={sportsData.futbol.leagues[0].standings}
+              title="Süper Lig"
+            />
           </div>
         </div>
       </div>

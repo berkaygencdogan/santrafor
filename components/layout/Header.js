@@ -72,12 +72,14 @@ export default function Header() {
 
           {/* LOGO (X ortalı, Y en üstte) */}
           <div className="absolute left-1/2 -translate-x-1/2 -top-11">
-            <img
-              src="https://i.hizliresim.com/8qjtfmq.png"
-              alt="Santrafor"
-              className="object-contain"
-              width={150}
-            />
+            <Link href="/">
+              <img
+                src="https://i.hizliresim.com/8qjtfmq.png"
+                alt="Santrafor"
+                className="object-contain"
+                width={150}
+              />
+            </Link>
           </div>
 
           {/* RIGHT NAV */}

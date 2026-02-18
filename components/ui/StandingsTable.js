@@ -5,7 +5,7 @@ export default function StandingsTable({ standings = [], title }) {
     <div className="bg-[#111827] rounded-xl p-4 w-full">
       {/* HEADER */}
       <h3 className="text-center text-yellow-400 font-bold mb-4">
-        {title} PUAN DURUMU
+        {title} Puan Durumu
       </h3>
 
       {/* TABLE */}
