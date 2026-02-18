@@ -7,7 +7,8 @@ import TeamSquad from "@/components/category/TeamSquad";
 import SportSwitch from "@/components/sport/SportSwitch";
 import Link from "next/link";
 
-/* MOCK */
+/* ---------------- MOCK ---------------- */
+
 const sports = ["futbol", "basketbol", "voleybol"];
 
 const generatePosts = (prefix, count = 20) =>
@@ -31,10 +32,31 @@ const mockCategories = [
     name: "Fenerbahçe",
     posts: generatePosts("fenerbahce"),
   },
+  {
+    slug: "besiktas",
+    name: "Beşiktaş",
+    posts: generatePosts("besiktas"),
+  },
+  {
+    slug: "trabzonspor",
+    name: "Trabzonspor",
+    posts: generatePosts("trabzonspor"),
+  },
 ];
 
+/* ---------------- LOGO ---------------- */
+
+const teamLogos = {
+  galatasaray:
+    "https://images.seeklogo.com/logo-png/61/2/galatasaray-5-stars-logo-png_seeklogo-618553.png",
+  fenerbahce:
+    "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
+};
+
+/* ---------------- PAGE ---------------- */
+
 export default async function Page({ params }) {
-  const { team } = params;
+  const { team } = await params;
 
   const category = mockCategories.find((c) => c.slug === team);
 
@@ -44,17 +66,94 @@ export default async function Page({ params }) {
 
   return (
     <div className="bg-[#0B1220] min-h-screen text-white">
-      <div className="max-w-[1400px] mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold mb-6">{category.name} Futbol</h1>
+      {/* 🔥 HEADER (GERİ GELDİ) */}
+      <div className="bg-gradient-to-r from-black via-[#0f172a] to-[#111827] py-10 border-b border-white/10">
+        <div className="max-w-[1400px] mx-auto px-4 flex flex-col lg:flex-row gap-8 items-center">
+          {/* LOGO + INFO */}
+          <div className="flex items-center gap-6">
+            <img
+              src={teamLogos[team]}
+              className="w-24 h-24 object-contain"
+              alt="logo"
+            />
 
-        <SportSwitch team={team} currentSport="futbol" />
+            <div>
+              <h1 className="text-4xl font-extrabold tracking-wide">
+                {category.name}
+              </h1>
 
-        <CategorySlider posts={posts} />
-        <MatchStats />
-        <CategoryTopNews posts={posts} />
-        <PlayerStats />
-        <CategoryGrid posts={posts} />
+              <p className="text-gray-400 mt-1">
+                {category.name} Futbol Haberleri
+              </p>
+
+              {/* 🔥 FORM (SON 6 MAÇ) */}
+              <div className="mt-4">
+                <p className="text-sm text-gray-400 mb-2">
+                  Son 6 Maç Performansı
+                </p>
+
+                <div className="flex gap-1">
+                  {["G", "G", "B", "G", "M", "G"].map((item, i) => (
+                    <span
+                      key={i}
+                      className={`w-7 h-7 flex items-center justify-center text-xs font-bold rounded
+                      ${
+                        item === "G"
+                          ? "bg-green-500"
+                          : item === "B"
+                            ? "bg-yellow-400 text-black"
+                            : "bg-red-500"
+                      }`}
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* BREADCRUMB */}
+              <div className="text-sm text-gray-500 mt-4">
+                <Link href="/">Haberler</Link> /{" "}
+                <span className="text-white">{category.name}</span> / futbol
+              </div>
+            </div>
+          </div>
+
+          {/* SAĞ BİLGİ */}
+          <div className="flex flex-col justify-center text-sm text-gray-300 max-w-[420px]">
+            <p>
+              Stadyum: <span className="text-yellow-400">Ali Sami Yen</span>
+            </p>
+            <p>
+              Başkan: <span className="text-yellow-400">Dursun Özbek</span>
+            </p>
+            <p>
+              Teknik Direktör:{" "}
+              <span className="text-yellow-400">Okan Buruk</span>
+            </p>
+          </div>
+
+          {/* SPORT SWITCH */}
+          <SportSwitch team={team} currentSport="futbol" />
+        </div>
       </div>
+
+      {/* 🔥 CONTENT */}
+      <div className="max-w-[1400px] mx-auto flex gap-6 mt-6 px-4">
+        <CategorySlider posts={posts} />
+
+        <div className="w-[600px] hidden lg:block">
+          <TeamSquad />
+        </div>
+      </div>
+
+      <MatchStats />
+
+      <CategoryTopNews posts={posts} />
+
+      <PlayerStats />
+
+      <CategoryGrid posts={posts} />
     </div>
   );
 }
