@@ -79,7 +79,7 @@ export default function Home() {
           {/* SOL GRID */}
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 items-start">
             {cat.posts.map((item) => (
-              <NewsCard key={item.id} item={item} />
+              <NewsCard key={item.id} item={item} team="" />
             ))}
           </div>
 
