@@ -46,6 +46,10 @@ export default function Header() {
 
           {/* TICKER */}
           <LiveTicker />
+          {/* SAĞ BİLGİ Günün Maçları yazacak */}
+          <span className="absolute right-12 text-xl w-50 font-extrabold text-green-400 to-black py-1 rounded-full backdrop-blur">
+            ⚽ Günün Maçları
+          </span>
         </div>
       </div>
       {/* MAIN NAV */}

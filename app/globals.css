@@ -3,6 +3,7 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: black;
+  color: white;
 }
 
 @keyframes slideRight {
@@ -90,4 +91,19 @@ body {
 }
 .animate-zoomInRight {
   animation: zoomInRight 0.3s forwards;
+}
+
+.ticker {
+  display: flex;
+  width: max-content;
+  animation: scrollTicker 60s linear infinite;
+}
+
+@keyframes scrollTicker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }

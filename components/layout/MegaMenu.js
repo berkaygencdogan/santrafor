@@ -1,11 +1,39 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { sportsData } from "@/lib/sportsData";
 import Link from "next/link";
 
 export default function MegaMenu({ type }) {
-  /* ================= SAFE DATA ================= */
+  /* ================= STATIC DATA ================= */
   const futbol = sportsData?.futbol || [];
   const basketbol = sportsData?.basketbol || [];
   const diger = sportsData?.diger || [];
+
+  /* ================= API STATE ================= */
+  const [leagues, setLeagues] = useState([]);
+  const [teams, setTeams] = useState([]);
+  const API = process.env.NEXT_PUBLIC_API_URL;
+  /* ================= FETCH FUTBOL ================= */
+  useEffect(() => {
+    if (type !== "futbol") return;
+
+    // 🔥 ligleri çek
+    fetch(`${API}/api/sport/leagues`)
+      .then((res) => res.json())
+      .then((res) => {
+        setLeagues(res.data || []);
+      })
+      .catch(console.error);
+
+    // 🔥 süper lig üzerinden TR takımlar (standings mantığı)
+    fetch(`${API}/api/sport/league/600/teams`)
+      .then((res) => res.json())
+      .then((res) => {
+        setTeams(res.data || []);
+      })
+      .catch(console.error);
+  }, [type]);
 
   /* ================= MENU ================= */
   if (type === "menu") {
@@ -67,7 +95,7 @@ export default function MegaMenu({ type }) {
     );
   }
 
-  /* ================= BASKETBOL ================= */
+  /* ================= BASKETBOL (AYNI) ================= */
   if (type === "basketbol") {
     return (
       <div className="grid md:grid-cols-2 gap-10">
@@ -105,7 +133,7 @@ export default function MegaMenu({ type }) {
     );
   }
 
-  /* ================= FUTBOL ================= */
+  /* ================= FUTBOL (API) ================= */
   if (type === "futbol") {
     return (
       <div className="grid md:grid-cols-3 gap-10">
@@ -113,12 +141,12 @@ export default function MegaMenu({ type }) {
         <div>
           <h4 className="text-lime-400 font-bold mb-3">LİGLER</h4>
 
-          <div className="space-y-2 text-sm text-white/80">
-            {futbol.leagues.map((item) => (
+          <div className="grid grid-cols-2 gap-y-2 text-sm text-white/80">
+            {leagues.slice(0, 24).map((item) => (
               <Link
-                key={item.slug}
-                href={`/futbol/${item.slug}`}
-                className="block hover:text-white"
+                key={item.id}
+                href={`/futbol/${item.id}`}
+                className="hover:text-white"
               >
                 {item.name}
               </Link>
@@ -128,48 +156,12 @@ export default function MegaMenu({ type }) {
 
         {/* TAKIMLAR */}
         <div>
-          <h4 className="text-lime-400 font-bold mb-3">TAKIMLAR</h4>
+          <h4 className="text-lime-400 text-center font-bold mb-3">TAKIMLAR</h4>
 
-          <div className="grid grid-cols-2 gap-y-2 text-sm text-white/80">
-            {["besiktas", "fenerbahce", "galatasaray", "trabzonspor"].map(
-              (team) => (
-                <Link
-                  key={team}
-                  href={`/${team}/futbol`}
-                  className="hover:text-white capitalize"
-                >
-                  {team}
-                </Link>
-              ),
-            )}
-          </div>
-
-          <h4 className="text-lime-400 font-bold mt-8 mb-3">MİLLİ TAKIM</h4>
-
-          <Link
-            href="/futbol/milli"
-            className="block text-sm text-white/80 hover:text-white"
-          >
-            A Milli Takım
-          </Link>
-        </div>
-
-        {/* ORGANİZASYON */}
-        <div>
-          <h4 className="text-lime-400 font-bold mb-3">ORGANİZASYONLAR</h4>
-
-          <div className="space-y-2 text-sm text-white/80">
-            {["sampiyonlar-ligi", "avrupa-ligi", "turkiye-kupasi"].map(
-              (org) => (
-                <Link
-                  key={org}
-                  href={`/futbol/${org}`}
-                  className="block hover:text-white capitalize"
-                >
-                  {org.replace("-", " ")}
-                </Link>
-              ),
-            )}
+          <div className="grid grid-cols-2 gap-y-2 text-sm text-white/80 text-right">
+            {teams.slice(0, 20).map((team) => (
+              <b key={team.id}>{team.name}</b>
+            ))}
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import StandingsTable from "@/components/ui/StandingsTable";
-import { sportsData } from "@/lib/sportsData";
+import StandingsContainer from "@/components/ui/StandingsContainer";
 
 export default function AuthorsPage() {
   const [activeTab, setActiveTab] = useState("gunun");
@@ -36,7 +36,6 @@ export default function AuthorsPage() {
     },
   ];
 
-  // 🔥 ARAMA (sadece isim)
   const filteredAuthors = authors.filter((a) =>
     a.name.toLowerCase().includes(search.toLowerCase()),
   );
@@ -68,12 +67,12 @@ export default function AuthorsPage() {
           </button>
         </div>
 
-        {/* 🔍 SEARCH SADECE TÜM YAZARLAR */}
+        {/* SEARCH */}
         {activeTab === "tum" && (
           <div className="flex gap-3 mb-8">
             <input
               value={search}
-              onChange={(e) => setSearch(e.target.value.slice(0, 7))} // max 7 karakter
+              onChange={(e) => setSearch(e.target.value.slice(0, 20))}
               placeholder="Yazar Ara..."
               className="flex-1 bg-[#111827] border border-white/10 px-4 py-3 rounded-xl focus:outline-none focus:border-yellow-400"
             />
@@ -109,7 +108,6 @@ export default function AuthorsPage() {
             ))}
           </div>
         ) : (
-          /* 🔥 TÜM YAZARLAR (FİLTRELİ) */
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredAuthors.map((a) => (
               <Link
@@ -129,7 +127,6 @@ export default function AuthorsPage() {
               </Link>
             ))}
 
-            {/* sonuç yoksa */}
             {filteredAuthors.length === 0 && (
               <div className="text-gray-400 col-span-full text-center">
                 Sonuç bulunamadı
@@ -141,10 +138,7 @@ export default function AuthorsPage() {
 
       {/* SAĞ */}
       <aside className="space-y-4">
-        <StandingsTable
-          standings={sportsData.futbol.leagues[0].standings}
-          title="Süper Lig"
-        />
+        <StandingsContainer />
 
         <div className="bg-gradient-to-br from-purple-500 to-indigo-600 h-[250px] rounded-xl flex items-center justify-center font-bold">
           REKLAM

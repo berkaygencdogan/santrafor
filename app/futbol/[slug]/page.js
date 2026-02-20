@@ -1,21 +1,33 @@
-import { sportsData } from "@/lib/sportsData";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default async function LeaguePage({ params }) {
-  const { slug } = await params;
+  const { slug } = await params; // artık slug = name olacak
+  let standings = [];
 
-  // ✅ slug ile bul
-  const league = sportsData.futbol.leagues.find((l) => l.slug === slug);
+  try {
+    const res = await fetch(
+      `${API_URL}/api/sport/standings/live/leagues/${slug}`,
+      {
+        cache: "no-store", // canlı veri
+      },
+    );
 
-  if (!league) {
-    return <div className="text-white p-10">Lig bulunamadı</div>;
+    const data = await res.json();
+    standings = data.data || [];
+  } catch (error) {
+    console.log("FETCH ERROR:", error);
+  }
+
+  if (!standings.length) {
+    return <div className="text-white p-10">Veri bulunamadı</div>;
   }
 
   return (
     <div className="bg-[#0B1220] min-h-screen text-white">
       <div className="max-w-[1400px] mx-auto px-4 py-10">
         {/* TITLE */}
-        <h1 className="text-3xl font-bold mb-2">{league.name}</h1>
-        <p className="text-gray-400 mb-8">{league.country} - Puan Durumu</p>
+        <h1 className="text-3xl font-bold mb-2">Puan Durumu</h1>
+        <p className="text-gray-400 mb-8">Lig Tablosu</p>
 
         {/* TABLE */}
         <div className="bg-[#111827] rounded-xl overflow-hidden">
@@ -24,29 +36,34 @@ export default async function LeaguePage({ params }) {
               <tr>
                 <th className="py-3">#</th>
                 <th className="text-left">Takım</th>
-                <th>O</th>
-                <th>G</th>
-                <th>M</th>
                 <th>P</th>
+                <th>Form</th>
               </tr>
             </thead>
 
             <tbody>
-              {league.standings.map((team) => (
+              {standings.map((team) => (
                 <tr
-                  key={team.rank}
+                  key={team.name}
                   className="border-b border-white/10 hover:bg-[#1f2937] transition"
                 >
-                  <td className="text-center py-3">{team.rank}</td>
+                  <td className="text-center py-3">{team.position}</td>
 
-                  <td className="px-2 font-medium">{team.team}</td>
-
-                  <td className="text-center">{team.play}</td>
-                  <td className="text-center">{team.win}</td>
-                  <td className="text-center">{team.lose}</td>
+                  <td className="px-2 font-medium flex items-center gap-2">
+                    <img src={team.logo} alt={team.name} className="w-5 h-5" />
+                    {team.name}
+                  </td>
 
                   <td className="text-center font-bold text-yellow-400">
-                    {team.point}
+                    {team.points}
+                  </td>
+
+                  <td className="text-center">
+                    {team.form === "up"
+                      ? "▲"
+                      : team.form === "down"
+                        ? "▼"
+                        : "—"}
                   </td>
                 </tr>
               ))}

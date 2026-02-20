@@ -1,4 +1,10 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 export default function Agenda({ posts = [], title }) {
+  const router = useRouter();
+
   if (!posts.length) return null;
 
   return (
@@ -10,10 +16,14 @@ export default function Agenda({ posts = [], title }) {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 relative rounded-2xl overflow-hidden">
+          {/* 🔥 BÜYÜK HABER */}
+          <div
+            onClick={() => router.push(`/news/${posts[0].slug}`)}
+            className="lg:col-span-2 relative rounded-2xl overflow-hidden cursor-pointer group"
+          >
             <img
               src={posts[0].image}
-              className="w-full h-[420px] object-cover"
+              className="w-full h-[420px] object-cover group-hover:scale-105 transition"
               alt={posts[0].title}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
@@ -22,15 +32,17 @@ export default function Agenda({ posts = [], title }) {
             </h3>
           </div>
 
+          {/* 🔥 SAĞ KÜÇÜKLER */}
           <div className="space-y-4">
             {posts.slice(1, 5).map((item) => (
               <div
                 key={item.id}
-                className="relative rounded-xl overflow-hidden"
+                onClick={() => router.push(`/news/${item.slug}`)}
+                className="relative rounded-xl overflow-hidden cursor-pointer group"
               >
                 <img
                   src={item.image}
-                  className="w-full h-[120px] object-cover"
+                  className="w-full h-[120px] object-cover group-hover:scale-105 transition"
                   alt={item.title}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />

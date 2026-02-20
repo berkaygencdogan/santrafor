@@ -1,48 +1,64 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 export default function LiveTicker() {
-  const matches = [
-    "Alagöz Holding Iğdır FK - Ümraniyespor 17:00",
-    "Boluspor - İstanbulspor 20:00",
-    "Fenerbahçe - Galatasaray 21:00",
-    "Beşiktaş - Trabzonspor 19:30",
-  ];
+  const [matches, setMatches] = useState([]);
+  const API = process.env.NEXT_PUBLIC_API_URL;
+
+  useEffect(() => {
+    const fetchData = () => {
+      fetch(`${API}/api/sport/fixtures/today`)
+        .then((res) => res.json())
+        .then((res) => setMatches(res.data || []));
+    };
+
+    fetchData();
+
+    const interval = setInterval(fetchData, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!matches.length) return null;
 
   return (
-    <div className="flex-1 overflow-hidden">
-      <div className="ticker-track">
-        {[...matches, ...matches].map((item, i) => (
-          <div key={i} className="ticker-item">
-            <span>⚽</span>
-            <span>{item}</span>
-          </div>
-        ))}
-      </div>
+    <div className="w-full overflow-hidden bg-[#0B1220] border-y border-white/10">
+      <div className="ticker flex gap-6 py-3">
+        {[...matches, ...matches].map((m, i) => {
+          const isFinished = m.status === 5;
 
-      <style jsx global>{`
-        .ticker-track {
-          display: flex;
-          white-space: nowrap;
-          will-change: transform;
-          animation: ticker 25s linear infinite;
-        }
-        .ticker-item {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 0 24px;
-          font-size: 14px;
-          color: rgba(255, 255, 255, 0.8);
-        }
-        @keyframes ticker {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-      `}</style>
+          return (
+            <div
+              key={i}
+              className="flex items-center gap-3 text-sm bg-white/5 px-4 py-2 rounded-xl min-w-max"
+            >
+              {/* HOME */}
+              <div className="flex items-center gap-1">
+                <img src={m.home.logo} className="w-4 h-4" />
+                <span>{m.home.name}</span>
+              </div>
+
+              {/* SCORE / TIME */}
+              <span className="font-bold text-yellow-400">
+                {isFinished
+                  ? `${m.homeScore}-${m.awayScore}`
+                  : new Date(m.time).toLocaleTimeString("tr-TR", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+              </span>
+              {/* AWAY */}
+              <div className="flex items-center gap-1">
+                <span>{m.away.name}</span>
+                <img src={m.away.logo} className="w-4 h-4" />
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -1,47 +1,42 @@
-export default function StandingsTable({ standings = [], title }) {
-  if (!standings.length) return null;
-
+export default function StandingsTable({ data, leagueName }) {
   return (
-    <div className="bg-[#111827] rounded-xl p-4 w-full">
-      {/* HEADER */}
-      <h3 className="text-center text-yellow-400 font-bold mb-4">
-        {title} Puan Durumu
-      </h3>
+    <div className="bg-[#0f172a] rounded-2xl p-4 text-white">
+      <h2 className="text-xl font-bold mb-4">{leagueName}</h2>
 
-      {/* TABLE */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="sticky top-0 bg-[#111827] z-10">
-            <tr className="text-gray-400 border-b border-white/10">
-              <th className="py-2 text-left">#</th>
-              <th className="py-2 text-left">Takım</th>
-              <th className="py-2 text-center">O</th>
-              <th className="py-2 text-center">G</th>
-              <th className="py-2 text-center">P</th>
-            </tr>
-          </thead>
+      <div className="space-y-2">
+        {data.map((team) => (
+          <div
+            key={team.position}
+            className="flex items-center justify-between bg-[#1e293b] rounded-xl px-3 py-2"
+          >
+            {/* sol */}
+            <div className="flex items-center gap-3">
+              <span className="w-5 text-sm text-gray-400">{team.position}</span>
 
-          <tbody>
-            {standings.map((team) => (
-              <tr
-                key={team.rank}
-                className="border-b border-white/5 hover:bg-white/5 transition text-white"
+              <img src={team.logo} alt={team.name} className="w-6 h-6" />
+
+              <span className="font-medium">{team.name}</span>
+            </div>
+
+            {/* sağ */}
+            <div className="flex items-center gap-3">
+              <span className="font-bold">{team.points}</span>
+
+              {/* form */}
+              <span
+                className={`text-xs ${
+                  team.form === "up"
+                    ? "text-green-400"
+                    : team.form === "down"
+                      ? "text-red-400"
+                      : "text-gray-400"
+                }`}
               >
-                <td className="py-2">{team.rank}</td>
-
-                <td className="py-2 font-medium">{team.team}</td>
-
-                <td className="py-2 text-center">{team.play}</td>
-
-                <td className="py-2 text-center">{team.win}</td>
-
-                <td className="py-2 text-center font-bold text-yellow-400">
-                  {team.point}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                {team.form === "up" ? "▲" : team.form === "down" ? "▼" : "—"}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

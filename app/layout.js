@@ -1,19 +1,23 @@
+"use client";
+
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-
-export const metadata = {
-  title: "Santrafor",
-  description: "Spor haberleri, canlı skor, gündem ve daha fazlası.",
-};
+import { usePathname } from "next/navigation";
 
 export default function RootLayout({ children }) {
+  const pathname = usePathname();
+
+  const isAdmin = pathname.startsWith("/admin");
+
   return (
     <html lang="tr">
       <body className="bg-white text-gray-900">
-        <Header />
+        {!isAdmin && <Header />}
+
         {children}
-        <Footer />
+
+        {!isAdmin && <Footer />}
       </body>
     </html>
   );

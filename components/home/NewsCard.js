@@ -1,21 +1,25 @@
-import Link from "next/link";
+"use client";
 
-export default function NewsCard({ item, team = "" }) {
+import { useRouter } from "next/navigation";
+
+export default function NewsCard({ item }) {
+  const router = useRouter();
+
   return (
-    <Link href={`/${team}/${item.slug}`}>
-      <div className="group cursor-pointer flex flex-col">
-        <div className="relative overflow-hidden rounded-xl h-[180px]">
-          <img
-            src={item.image}
-            alt={item.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        </div>
+    <div
+      onClick={() => router.push(`/news/${item.slug}`)}
+      className="cursor-pointer rounded-xl overflow-hidden group"
+    >
+      <img
+        src={item.image}
+        className="w-full h-[220px] object-cover group-hover:scale-105 transition"
+        alt={item.title}
+      />
 
-        <h3 className="mt-3 text-[15px] font-semibold leading-snug text-white line-clamp-2 min-h-[44px] group-hover:text-yellow-400 transition">
-          {item.title}
-        </h3>
+      <div className="p-3">
+        <p className="text-xs text-gray-400">{item.category}</p>
+        <h3 className="font-bold">{item.title}</h3>
       </div>
-    </Link>
+    </div>
   );
 }

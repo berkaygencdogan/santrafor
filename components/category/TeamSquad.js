@@ -1,35 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 const tabs = ["Kaleci", "Defans", "Orta Saha", "Hücum"];
 
-const mockSquad = {
-  Kaleci: [
-    { no: 19, name: "Günay Güvenç", played: 7, g: 0, a: 0 },
-    { no: 1, name: "Uğurcan Çakır", played: 14, g: 0, a: 0 },
-    { no: 12, name: "Batuhan Ahmet Şen", played: 0, g: 0, a: 0 },
-    { no: 70, name: "Enes Emre Büyük", played: 0, g: 0, a: 0 },
-    { no: 60, name: "Arda Yılmaz", played: 0, g: 0, a: 0 },
-    { no: 70, name: "Enes Emre Büyük", played: 0, g: 0, a: 0 },
-    { no: 12, name: "Batuhan Ahmet Şen", played: 0, g: 0, a: 0 },
-    { no: 1, name: "Uğurcan Çakır", played: 14, g: 0, a: 0 },
-  ],
-  Defans: [],
-  "Orta Saha": [],
-  Hücum: [],
+const positionMap = {
+  24: "Kaleci",
+  25: "Defans",
+  26: "Orta Saha",
+  27: "Hücum",
 };
 
-export default function TeamSquad() {
+export default function TeamSquad({ squad = [], teamName }) {
   const [active, setActive] = useState("Kaleci");
 
-  const players = mockSquad[active] || [];
+  const grouped = useMemo(() => {
+    const result = {
+      Kaleci: [],
+      Defans: [],
+      "Orta Saha": [],
+      Hücum: [],
+    };
+
+    squad.forEach((item) => {
+      const pos = positionMap[item.position_id] || "Orta Saha";
+
+      result[pos].push({
+        no: item.number || "-",
+        name: item.name,
+        photo: item.photo,
+      });
+    });
+
+    return result;
+  }, [squad]);
+
+  const players = grouped[active] || [];
 
   return (
     <div className="bg-[#111827] rounded-xl overflow-hidden h-[450px] border-2 border-white/90">
       {/* HEADER */}
       <div className="bg-[#1f2937] text-center py-3 font-bold text-green-400">
-        GALATASARAY KADROSU
+        {teamName?.toUpperCase()} KADROSU
       </div>
 
       {/* TABS */}
@@ -52,24 +64,31 @@ export default function TeamSquad() {
       {/* TABLE */}
       <div className="text-sm">
         {/* HEAD */}
-        <div className="grid grid-cols-4 px-4 py-2 text-gray-400 border-b border-white/10 sticky top-0 bg-[#111827] z-10">
+        <div className="grid grid-cols-[40px_1fr] px-4 py-2 text-gray-400 border-b border-white/10 sticky top-0 bg-[#111827] z-10">
           <span>#</span>
           <span>Oyuncu</span>
-          <span className="text-center">Oyn</span>
-          <span className="text-center">G</span>
         </div>
 
-        {/* SCROLL AREA */}
+        {/* LIST */}
         <div className="max-h-[280px] overflow-y-auto">
           {players.map((p, i) => (
             <div
               key={i}
-              className="grid grid-cols-4 px-4 py-3 border-b border-white/5 hover:bg-white/5 transition"
+              className="grid grid-cols-[40px_1fr] items-center px-4 py-3 border-b border-white/5 hover:bg-white/5 transition"
             >
+              {/* NUMARA */}
               <span className="text-gray-400">{p.no}</span>
-              <span>{p.name}</span>
-              <span className="text-center">{p.played}</span>
-              <span className="text-center">{p.g}</span>
+
+              {/* FOTO + İSİM */}
+              <div className="flex items-center gap-3">
+                <img
+                  src={p.photo}
+                  alt={p.name}
+                  className="w-8 h-8 rounded-full object-cover bg-white/10"
+                />
+
+                <span className="font-medium">{p.name}</span>
+              </div>
             </div>
           ))}
 

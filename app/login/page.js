@@ -1,16 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
   const [active, setActive] = useState("yazar");
   const [anim, setAnim] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   const handleSwitch = (type) => {
     if (type === active) return;
@@ -21,6 +26,50 @@ export default function LoginPage() {
       setActive(type);
       setAnim(type === "admin" ? "animate-zoomInRight" : "animate-zoomInLeft");
     }, 300);
+  };
+
+  const handleLogin = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch(`${API}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: form.username,
+          password: form.password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Giriş başarısız");
+        setLoading(false);
+        return;
+      }
+
+      // token kaydet
+      localStorage.setItem("token", data.token);
+
+      // decode
+      const payload = JSON.parse(atob(data.token.split(".")[1]));
+      console.log(localStorage.getItem("token"));
+      // yönlendirme
+      if (payload.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+    } catch (err) {
+      console.log(err);
+      setError("Sunucu hatası");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,108 +83,97 @@ export default function LoginPage() {
     >
       <div className="w-full max-w-5xl flex justify-between items-center relative">
         <div
-          className={`
-            w-full max-w-md transition-all duration-500
-            ${active === "yazar" ? "translate-x-0" : "translate-x-[275%]"}
-            ${anim}
-          `}
+          className={`w-full max-w-md transition-all duration-500 ${
+            active === "yazar" ? "translate-x-0" : "translate-x-[275%]"
+          } ${anim}`}
         >
-          <div className="relative bg-[#0f172a]/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/10">
-            {/* 🔥 GLOW EFFECT */}
-            <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-yellow-400/20 to-orange-500/20 blur-xl opacity-30 pointer-events-none" />
+          <div className="relative">
+            {/* GLOW */}
+            <div className="absolute inset-0 -z-10 blur-2xl bg-gradient-to-r from-yellow-400/20 to-orange-500/20" />
 
-            {/* HEADER */}
-            <h2 className="relative text-3xl font-extrabold mb-8 text-center text-white tracking-wide">
-              {active === "yazar" ? "Yazar Girişi" : "Admin Paneli"}
-            </h2>
+            <div className="relative z-10 bg-[#0f172a]/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/10">
+              {/* HEADER */}
+              <h2 className="text-3xl font-extrabold mb-8 text-center text-white">
+                {active === "yazar" ? "Yazar Girişi" : "Admin Paneli"}
+              </h2>
 
-            {/* INPUT GROUP */}
-            <div className="space-y-5 relative">
-              {/* EMAIL */}
-              <div className="group">
-                <label className="text-xs text-gray-400 uppercase tracking-wider">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  placeholder="ornek@mail.com"
-                  className="w-full mt-2 px-4 py-3 rounded-xl bg-[#020617] border border-white/10 text-white 
-                  focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/30
-                  transition-all duration-300 group-hover:border-white/20"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                />
+              {/* ERROR */}
+              {error && (
+                <div className="mb-4 text-red-400 text-sm text-center">
+                  {error}
+                </div>
+              )}
+
+              {/* INPUTS */}
+              <div className="space-y-5">
+                <div>
+                  <label className="text-xs text-gray-400">Kullanıcı Adı</label>
+                  <input
+                    type="text"
+                    className="w-full mt-2 px-4 py-3 rounded-xl bg-[#020617] border border-white/10 text-white focus:border-yellow-400 focus:outline-none"
+                    value={form.username}
+                    onChange={(e) =>
+                      setForm({ ...form, username: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-400">Şifre</label>
+                  <input
+                    type="password"
+                    className="w-full mt-2 px-4 py-3 rounded-xl bg-[#020617] border border-white/10 text-white focus:border-yellow-400 focus:outline-none"
+                    value={form.password}
+                    onChange={(e) =>
+                      setForm({ ...form, password: e.target.value })
+                    }
+                  />
+                </div>
               </div>
 
-              {/* PASSWORD */}
-              <div className="group">
-                <label className="text-xs text-gray-400 uppercase tracking-wider">
-                  Şifre
-                </label>
-                <input
-                  type="password"
-                  placeholder="********"
-                  className="w-full mt-2 px-4 py-3 rounded-xl bg-[#020617] border border-white/10 text-white 
-                  focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/30
-                  transition-all duration-300 group-hover:border-white/20"
-                  value={form.password}
-                  onChange={(e) =>
-                    setForm({ ...form, password: e.target.value })
-                  }
-                />
+              {/* BUTTON */}
+              <button
+                onClick={handleLogin}
+                disabled={loading}
+                className="w-full mt-8 py-3 rounded-xl font-bold text-black
+                bg-gradient-to-r from-yellow-400 to-orange-500
+                hover:from-yellow-300 hover:to-orange-400
+                transition-all duration-300
+                disabled:opacity-50"
+              >
+                {loading ? "Giriş Yapılıyor..." : "Giriş Yap"}
+              </button>
+
+              {/* SWITCH */}
+              <div className="flex bg-[#020617] rounded-xl p-1 mt-6 border border-white/10">
+                <button
+                  onClick={() => handleSwitch("yazar")}
+                  className={`flex-1 py-2 rounded-lg text-sm font-semibold transition ${
+                    active === "yazar"
+                      ? "bg-yellow-400 text-black"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  Yazar Girişi
+                </button>
+
+                <button
+                  onClick={() => handleSwitch("admin")}
+                  className={`flex-1 py-2 rounded-lg text-sm font-semibold transition ${
+                    active === "admin"
+                      ? "bg-yellow-400 text-black"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  Admin Girişi
+                </button>
               </div>
+
+              {/* FOOTER */}
+              <p className="text-center text-gray-500 text-xs mt-8">
+                © 2026 Santrafor
+              </p>
             </div>
-
-            {/* BUTTON */}
-            <button
-              className="
-              w-full mt-8 py-3 rounded-xl font-bold text-black
-              bg-gradient-to-r from-yellow-400 to-orange-500
-              hover:from-yellow-300 hover:to-orange-400
-              shadow-lg shadow-yellow-500/20
-              hover:shadow-yellow-500/40
-              transition-all duration-300
-              active:scale-[0.98]
-            "
-              onClick={() => alert("deneme")}
-            >
-              Giriş Yap
-            </button>
-
-            <div className="flex bg-[#020617] rounded-xl p-1 mt-6 border border-white/10">
-              <button
-                onClick={() => handleSwitch("yazar")}
-                className={`
-      flex-1 py-2 rounded-lg text-sm font-semibold transition-all duration-300
-      ${
-        active === "yazar"
-          ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-black shadow-md"
-          : "text-gray-400 hover:text-white"
-      }
-    `}
-              >
-                Yazar Girişi
-              </button>
-
-              <button
-                onClick={() => handleSwitch("admin")}
-                className={`
-      flex-1 py-2 rounded-lg text-sm font-semibold transition-all duration-300
-      ${
-        active === "admin"
-          ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-black shadow-md"
-          : "text-gray-400 hover:text-white"
-      }
-    `}
-              >
-                Admin Girişi
-              </button>
-            </div>
-
-            {/* FOOTER */}
-            <p className="text-center text-gray-500 text-xs mt-8">
-              © 2026 Santrafor
-            </p>
           </div>
         </div>
       </div>

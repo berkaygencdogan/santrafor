@@ -7,83 +7,116 @@ import TeamSquad from "@/components/category/TeamSquad";
 import SportSwitch from "@/components/sport/SportSwitch";
 import Link from "next/link";
 
-/* ---------------- MOCK ---------------- */
+async function getTeamPosts(team) {
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
-const sports = ["futbol", "basketbol", "voleybol"];
+  const res = await fetch(`${API}/api/posts/team/${team}`, {
+    cache: "no-store",
+  });
 
-const generatePosts = (prefix, count = 20) =>
-  Array.from({ length: count }).map((_, i) => ({
-    id: i + 1,
-    title: `Futbol haber ${i + 1}`,
-    slug: `${prefix}-haber-${i + 1}`,
-    image: `https://picsum.photos/800/50${i % 10}?${prefix}${i}`,
-    date: `${10 + i} Şubat 2026`,
-    sport: sports[i % sports.length],
+  if (!res.ok) return [];
+
+  const data = await res.json();
+  console.log(data);
+  return data.data || [];
+}
+
+const mapPosts = (arr) =>
+  arr.map((p) => ({
+    id: p.id,
+    title: p.title,
+    image: p.cover_image,
+    slug: p.slug,
+    sport: p.sport,
   }));
 
-const mockCategories = [
-  {
-    slug: "galatasaray",
-    name: "Galatasaray",
-    posts: generatePosts("galatasaray"),
-  },
-  {
-    slug: "fenerbahce",
-    name: "Fenerbahçe",
-    posts: generatePosts("fenerbahce"),
-  },
-  {
-    slug: "besiktas",
-    name: "Beşiktaş",
-    posts: generatePosts("besiktas"),
-  },
-  {
-    slug: "trabzonspor",
-    name: "Trabzonspor",
-    posts: generatePosts("trabzonspor"),
-  },
-];
-
-/* ---------------- LOGO ---------------- */
-
-const teamLogos = {
-  galatasaray:
-    "https://images.seeklogo.com/logo-png/61/2/galatasaray-5-stars-logo-png_seeklogo-618553.png",
-  fenerbahce:
-    "https://upload.wikimedia.org/wikipedia/tr/thumb/8/86/Fenerbah%C3%A7e_SK.png/250px-Fenerbah%C3%A7e_SK.png",
-};
-
-/* ---------------- PAGE ---------------- */
+const normalize = (str) =>
+  str
+    ?.toLowerCase()
+    .replace(/ç/g, "c")
+    .replace(/ğ/g, "g")
+    .replace(/ı/g, "i")
+    .replace(/ö/g, "o")
+    .replace(/ş/g, "s")
+    .replace(/ü/g, "u")
+    .replace(/\s+/g, "");
 
 export default async function Page({ params }) {
   const { team } = await params;
+  const trTeam =
+    team === "galatasaray"
+      ? "Galatasaray"
+      : team === "fenerbahce"
+        ? "Fenerbahçe"
+        : team === "besiktas"
+          ? "Beşiktaş"
+          : team === "trabzonspor"
+            ? "Trabzonspor"
+            : null;
+  let squad = [];
+  let teamInfo = null;
+  let standings = [];
+  let slug = null;
+  let name = null;
+  let posts = [];
+  let futbol = [];
+  let basket = [];
+  let voley = [];
 
-  const category = mockCategories.find((c) => c.slug === team);
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/sport/team/${trTeam}/squad`,
+      { cache: "no-store" },
+    );
 
-  if (!category) return <div className="text-white p-10">Takım yok</div>;
+    const text = await res.text(); // 🔥 önce text al
 
-  const posts = category.posts.filter((p) => p.sport === "futbol");
+    const data = JSON.parse(text); // sonra parse et
+    squad = data.data || [];
+    teamInfo = data.team || null;
+    slug = teamInfo ? normalize(teamInfo.name) : null;
+    name = teamInfo ? teamInfo.name : null;
+    const rawPosts = await getTeamPosts(team);
+    posts = mapPosts(rawPosts);
+    futbol = posts.filter((p) => p.sport === "futbol");
+    basket = posts.filter((p) => p.sport === "basketbol");
+    voley = posts.filter((p) => p.sport === "voleybol");
+  } catch (error) {
+    console.log("FETCH ERROR:", error);
+  }
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/sport/standings/600`,
+      { cache: "no-store" },
+    );
+
+    const data = await res.json();
+    standings = data.data || [];
+  } catch (error) {
+    console.log("STANDINGS ERROR:", error);
+  }
 
   return (
     <div className="bg-[#0B1220] min-h-screen text-white">
       {/* 🔥 HEADER (GERİ GELDİ) */}
-      <div className="bg-gradient-to-r from-black via-[#0f172a] to-[#111827] py-10 border-b border-white/10">
-        <div className="max-w-[1400px] mx-auto px-4 flex flex-col lg:flex-row gap-8 items-center">
+      <div className=" bg-gradient-to-r from-black via-[#0f172a] to-[#111827] py-10 border-b border-white/10">
+        <div className="max-w-[1400px] justify-between mx-auto px-4 flex flex-col lg:flex-row gap-8 items-center">
           {/* LOGO + INFO */}
           <div className="flex items-center gap-6">
             <img
-              src={teamLogos[team]}
+              src={teamInfo?.image_path}
               className="w-24 h-24 object-contain"
               alt="logo"
             />
 
             <div>
               <h1 className="text-4xl font-extrabold tracking-wide">
-                {category.name}
+                {teamInfo?.name}
               </h1>
 
               <p className="text-gray-400 mt-1">
-                {category.name} Futbol Haberleri
+                {teamInfo?.name} Futbol Haberleri
               </p>
 
               {/* 🔥 FORM (SON 6 MAÇ) */}
@@ -113,47 +146,96 @@ export default async function Page({ params }) {
 
               {/* BREADCRUMB */}
               <div className="text-sm text-gray-500 mt-4">
-                <Link href="/">Haberler</Link> /{" "}
-                <span className="text-white">{category.name}</span> / futbol
+                <Link href="/">Haberler</Link> /
+                <span className="text-white">{teamInfo?.name}</span> / futbol
               </div>
             </div>
+            <div className="text-sm text-gray-500 mt-4 flex gap-4">
+              <SportSwitch
+                team={slug}
+                currentSport="futbol"
+                teamInfo={teamInfo}
+              />
+            </div>
           </div>
+          <div className="bg-[#0f172a] rounded-2xl p-4 text-white w-full max-w-[420px]">
+            <h2 className="text-xl font-bold mb-4">Süper Lig Puan Durumu</h2>
 
-          {/* SAĞ BİLGİ */}
-          <div className="flex flex-col justify-center text-sm text-gray-300 max-w-[420px]">
-            <p>
-              Stadyum: <span className="text-yellow-400">Ali Sami Yen</span>
-            </p>
-            <p>
-              Başkan: <span className="text-yellow-400">Dursun Özbek</span>
-            </p>
-            <p>
-              Teknik Direktör:{" "}
-              <span className="text-yellow-400">Okan Buruk</span>
-            </p>
+            {/* 🔥 SCROLL */}
+            <div className="max-h-[250px] overflow-y-auto pr-2 space-y-2 scrollbar-thin scrollbar-thumb-gray-700">
+              {standings.map((t) => {
+                const isActive = normalize(t.name) === team;
+
+                return (
+                  <div
+                    key={t.id}
+                    className={`flex items-center justify-between rounded-xl px-3 py-2 transition
+          ${
+            isActive
+              ? "bg-orange-500/20 border border-orange-500"
+              : "bg-[#1e293b] hover:bg-white/5"
+          }`}
+                  >
+                    {/* SOL */}
+                    <div className="flex items-center gap-3">
+                      <span className="w-6 text-sm text-gray-400">
+                        {t.position}
+                      </span>
+
+                      {/* 🔥 LOGO BÜYÜTÜLDÜ */}
+                      <img
+                        src={t.logo}
+                        alt={t.name}
+                        className="w-8 h-8 object-contain"
+                      />
+
+                      <span
+                        className={`font-medium ${
+                          isActive ? "text-orange-400 font-bold" : ""
+                        }`}
+                      >
+                        {t.name}
+                      </span>
+                    </div>
+
+                    {/* SAĞ */}
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-lg">{t.points}</span>
+
+                      {/* FORM */}
+                      <span
+                        className={`text-xs ${
+                          t.form === "up"
+                            ? "text-green-400"
+                            : t.form === "down"
+                              ? "text-red-400"
+                              : "text-gray-400"
+                        }`}
+                      >
+                        {t.form === "up" ? "▲" : t.form === "down" ? "▼" : "—"}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-
-          {/* SPORT SWITCH */}
-          <SportSwitch team={team} currentSport="futbol" />
         </div>
       </div>
 
       {/* 🔥 CONTENT */}
       <div className="max-w-[1400px] mx-auto flex gap-6 mt-6 px-4">
-        <CategorySlider posts={posts} />
+        <CategorySlider posts={futbol} />
 
         <div className="w-[600px] hidden lg:block">
-          <TeamSquad />
+          <TeamSquad squad={squad} teamName={teamInfo?.name} />
         </div>
       </div>
 
-      <MatchStats />
-
-      <CategoryTopNews posts={posts} />
-
-      <PlayerStats />
-
-      <CategoryGrid posts={posts} />
+      <MatchStats teamId={teamInfo?.id} />
+      <CategoryTopNews posts={futbol} />
+      <PlayerStats squad={squad} teamName={teamInfo?.name} />
+      <CategoryGrid posts={futbol} />
     </div>
   );
 }
