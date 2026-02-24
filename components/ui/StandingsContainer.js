@@ -5,12 +5,12 @@ import StandingsTable from "./StandingsTable";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export default function StandingsContainer({ leagueName }) {
+export default function StandingsContainer({ leagueId, leagueName }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/sport/standings/live/leagues/${leagueName}`)
+    fetch(`${API_URL}/api/sport/standings/${leagueId}`)
       .then((res) => res.json())
       .then((res) => {
         setData(res.data || []);

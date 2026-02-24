@@ -1,23 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NewsCard from "@/components/home/NewsCard";
 import Link from "next/link";
 import StandingsContainer from "../ui/StandingsContainer";
 
-export default function SportNews({ title, leagueId, posts = [], sport }) {
+export default function SportNews({ title, leagueId, sport }) {
   const [showAll, setShowAll] = useState(false);
+  const [postsData, setPostsData] = useState([]);
 
-  /* 🔥 HABER DATA */
-  const generatePosts = (prefix) =>
-    Array.from({ length: 20 }).map((_, i) => ({
-      id: `${prefix}-${i}`,
-      title: `${prefix} haber ${i + 1}`,
-      image: `https://picsum.photos/400/300?random=${prefix}${i}`,
-      date: `${10 + i} Şubat 2026`,
-    }));
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/league/${title}`)
+      .then((res) => res.json())
+      .then((res) => setPostsData(res.data || []))
+      .catch(console.error);
+  }, [title]);
 
-  const allPosts = posts.length ? posts : generatePosts(title || "spor");
+  const allPosts = postsData;
   const visiblePosts = showAll ? allPosts : allPosts.slice(0, 9);
 
   return (
@@ -25,7 +24,7 @@ export default function SportNews({ title, leagueId, posts = [], sport }) {
       {/* TITLE */}
       <div className="mb-6 flex items-center justify-between">
         <Link
-          href={`/${sport}/${title}`}
+          href={`/${sport}/${leagueId}`}
           className="text-2xl font-bold text-white hover:text-yellow-500 transition"
         >
           {title}
@@ -61,7 +60,7 @@ export default function SportNews({ title, leagueId, posts = [], sport }) {
         </div>
 
         {/* SAĞ */}
-        <StandingsContainer leagueName={title} />
+        <StandingsContainer leagueId={leagueId} leagueName={title} />
       </div>
     </section>
   );

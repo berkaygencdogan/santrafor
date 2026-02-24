@@ -3,14 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Editor } from "@tinymce/tinymce-react";
+import TagSelector from "@/components/admin/TagSelector";
 
 export default function EditNewsPage() {
   const router = useRouter();
   const { id } = useParams();
 
   const API = process.env.NEXT_PUBLIC_API_URL;
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const [form, setForm] = useState({
     title: "",
@@ -25,36 +24,55 @@ export default function EditNewsPage() {
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
 
-  /* ================= DATA ÇEK ================= */
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+  /* ================= DATA LOAD ================= */
 
   useEffect(() => {
-    // HABER
-    fetch(`${API}/api/posts/${id}`)
-      .then((r) => r.json())
-      .then((d) => {
-        const n = d.data;
+    if (!id) return;
 
-        setForm({
-          title: n.title,
-          summary: n.summary,
-          content: n.content,
-          cover_image: n.cover_image,
-          category_id: n.category_id,
-          tags: n.tags?.map((t) => t.id) || [],
-          status: n.status,
-        });
-      });
+    const load = async () => {
+      try {
+        // 🔥 POST
+        const postRes = await fetch(`${API}/api/posts/${id}`);
+        const postData = await postRes.json();
 
-    // CATEGORY
-    fetch(`${API}/api/categories`)
-      .then((r) => r.json())
-      .then((d) => setCategories(d.data || []));
+        if (postRes.ok && postData?.data) {
+          const n = postData.data;
 
-    // TAGS
-    fetch(`${API}/api/tags`)
-      .then((r) => r.json())
-      .then((d) => setTags(d.data || []));
+          setForm({
+            title: n.title || "",
+            summary: n.summary || "",
+            content: n.content || "",
+            cover_image: n.cover_image || "",
+            category_id: n.category_id || "",
+            tags: n.tags?.map((t) => t.id) || [],
+            status: n.status || "draft",
+          });
+        } else {
+          console.log("POST BULUNAMADI:", postData);
+        }
+
+        // 🔥 CATEGORY
+        const catRes = await fetch(`${API}/api/categories`);
+        const catData = await catRes.json();
+        setCategories(catData.data || []);
+
+        // 🔥 TAGS
+        const tagRes = await fetch(`${API}/api/tags`);
+        const tagData = await tagRes.json();
+        setTags(tagData.data || []);
+      } catch (err) {
+        console.log("LOAD ERROR:", err);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+
+    load();
   }, [id]);
 
   /* ================= UPDATE ================= */
@@ -73,7 +91,6 @@ export default function EditNewsPage() {
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         alert(data.error || "Hata");
         return;
@@ -99,8 +116,20 @@ export default function EditNewsPage() {
       },
     });
 
-    router.push("/admin/posts");
+    router.push("/admin/news");
   };
+
+  /* ================= LOADING ================= */
+
+  if (pageLoading) {
+    return (
+      <div className="p-10 text-white">
+        <p>Yükleniyor...</p>
+      </div>
+    );
+  }
+
+  console.log(categories, tags, form);
 
   /* ================= UI ================= */
 
@@ -124,7 +153,7 @@ export default function EditNewsPage() {
 
       {/* COVER URL */}
       <input
-        placeholder="Kapak görsel URL (opsiyonel)"
+        placeholder="Kapak görsel URL"
         className="w-full mb-3 p-3 rounded bg-[#020617]"
         value={form.cover_image}
         onChange={(e) => setForm({ ...form, cover_image: e.target.value })}
@@ -135,12 +164,10 @@ export default function EditNewsPage() {
         <input
           type="file"
           accept="image/*"
-          className="text-sm"
           onChange={async (e) => {
             const file = e.target.files?.[0];
             if (!file) return;
 
-            const token = localStorage.getItem("token");
             const formData = new FormData();
             formData.append("file", file);
 
@@ -151,133 +178,50 @@ export default function EditNewsPage() {
             });
 
             const data = await res.json();
+
             if (!res.ok) {
-              alert(data.error || "Kapak upload başarısız");
+              alert(data.error || "Upload hatası");
               return;
             }
 
-            // ✅ DB’ye yazılacak alan yine cover_image
-            setForm((prev) => ({ ...prev, cover_image: data.url }));
+            setForm((prev) => ({
+              ...prev,
+              cover_image: data.url,
+            }));
           }}
         />
 
         {form.cover_image && (
           <img
             src={form.cover_image}
-            alt="cover"
-            className="w-20 h-14 object-cover rounded border border-white/10"
+            className="w-20 h-14 object-cover rounded"
           />
         )}
       </div>
 
-      <div className="mb-4 flex flex-col gap-2">
-        <select
-          className="w-full p-3 rounded bg-[#020617]"
-          value={form.category_id}
-          onChange={(e) => setForm({ ...form, category_id: e.target.value })}
-        >
-          <option value="">Kategori seç</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+      {/* CATEGORY */}
+      <select
+        className="w-full mb-4 p-3 rounded bg-[#020617]"
+        value={form.category_id}
+        onChange={(e) => setForm({ ...form, category_id: e.target.value })}
+      >
+        <option value="">Kategori seç</option>
+        {categories.map((c) => (
+          <option key={c.id} value={c.id}>
+            {c.name}
+          </option>
+        ))}
+      </select>
 
-        <button
-          onClick={async () => {
-            const name = prompt("Yeni kategori adı");
-            if (!name) return;
-
-            const res = await fetch(`${API}/api/categories`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({ name }),
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-              setCategories([...categories, data.data]);
-
-              setForm({
-                ...form,
-                category_id: data.data.id,
-              });
-            }
-          }}
-          className="px-4 py-2 bg-green-500 rounded"
-        >
-          + Yeni Kategori
-        </button>
-      </div>
-      {/* TAGS */}
+      {/* TAG SELECTOR */}
       <div className="mb-4">
         <p className="mb-2 text-sm text-gray-400">Etiketler</p>
 
-        {/* TAG LIST */}
-        <div className="flex flex-wrap gap-2 mb-3">
-          {tags.map((t) => {
-            const selected = form.tags.includes(t.id);
-
-            return (
-              <button
-                key={t.id}
-                onClick={() => {
-                  if (selected) {
-                    setForm({
-                      ...form,
-                      tags: form.tags.filter((id) => id !== t.id),
-                    });
-                  } else {
-                    setForm({
-                      ...form,
-                      tags: [...form.tags, t.id],
-                    });
-                  }
-                }}
-                className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm transition
-          ${
-            selected
-              ? "bg-yellow-400 text-black"
-              : "bg-gray-700 hover:bg-gray-600"
-          }`}
-              >
-                {t.name}
-                <span className="font-bold">{selected ? "✕" : "+"}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* SEÇİLEN TAGLER */}
-        {form.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
-            {form.tags.map((id) => {
-              const tag = tags.find((t) => t.id === id);
-              if (!tag) return null;
-
-              return (
-                <span
-                  key={id}
-                  className="bg-[#1e293b] px-3 py-1 rounded-full text-sm text-yellow-400"
-                >
-                  #{tag.name}
-                </span>
-              );
-            })}
-          </div>
-        )}
-
-        {/* TAG EKLE */}
-        <button
-          onClick={async () => {
-            const name = prompt("Yeni etiket adı");
-            if (!name) return;
-
+        <TagSelector
+          tags={tags}
+          selected={form.tags}
+          onChange={(newTags) => setForm({ ...form, tags: newTags })}
+          onCreateTag={async (name) => {
             const res = await fetch(`${API}/api/tags`, {
               method: "POST",
               headers: {
@@ -289,20 +233,15 @@ export default function EditNewsPage() {
 
             const data = await res.json();
 
-            if (res.ok) {
-              setTags([...tags, data.data]);
-
-              // otomatik seç
-              setForm({
-                ...form,
-                tags: [...form.tags, data.data.id],
-              });
+            if (!res.ok) {
+              alert(data.error || "Tag eklenemedi");
+              return null;
             }
+
+            setTags((prev) => [...prev, data.data]);
+            return data.data;
           }}
-          className="mt-3 px-4 py-2 bg-green-500 rounded"
-        >
-          + Yeni Etiket
-        </button>
+        />
       </div>
 
       {/* STATUS */}
@@ -352,7 +291,7 @@ export default function EditNewsPage() {
           disabled={loading}
           className="bg-yellow-400 text-black px-6 py-3 rounded font-bold"
         >
-          Güncelle
+          {loading ? "Kaydediliyor..." : "Güncelle"}
         </button>
 
         <button

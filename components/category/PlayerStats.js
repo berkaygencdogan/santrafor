@@ -20,7 +20,18 @@ export default function PlayerStats({ squad = [], teamName }) {
     <div className="max-w-[1400px] mx-auto px-4 mt-10 grid lg:grid-cols-[1fr_2fr] gap-6">
       {/* 🔥 SOL - TOP 3 */}
       <div className="space-y-4">
-        {players.slice(0, 3).map((p, i) => (
+        <div className="mb-3">
+          <span className="inline-block bg-yellow-400/10 text-yellow-400 text-xs font-bold px-3 py-1 rounded-full mb-2">
+            ÖNE ÇIKAN
+          </span>
+
+          <h3 className="text-lg font-bold text-white">
+            🏆 En Skorer Oyuncular
+          </h3>
+
+          <div className="mt-2 h-[2px] w-full bg-gradient-to-r from-yellow-400/40 via-yellow-400 to-transparent rounded-full" />
+        </div>
+        {players.slice(0, 6).map((p, i) => (
           <div
             key={i}
             className="flex items-center gap-3 bg-[#111827] p-3 rounded-xl border border-white/10"

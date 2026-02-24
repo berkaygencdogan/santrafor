@@ -14,6 +14,8 @@ export default function MegaMenu({ type }) {
   const [leagues, setLeagues] = useState([]);
   const [teams, setTeams] = useState([]);
   const API = process.env.NEXT_PUBLIC_API_URL;
+
+  const HIDDEN_LEAGUES = [24, 570, 390, 27];
   /* ================= FETCH FUTBOL ================= */
   useEffect(() => {
     if (type !== "futbol") return;
@@ -142,15 +144,18 @@ export default function MegaMenu({ type }) {
           <h4 className="text-lime-400 font-bold mb-3">LİGLER</h4>
 
           <div className="grid grid-cols-2 gap-y-2 text-sm text-white/80">
-            {leagues.slice(0, 24).map((item) => (
-              <Link
-                key={item.id}
-                href={`/futbol/${item.id}`}
-                className="hover:text-white"
-              >
-                {item.name}
-              </Link>
-            ))}
+            {leagues
+              .filter((l) => !HIDDEN_LEAGUES.includes(l.id))
+              .slice(0, 24)
+              .map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/futbol/${item.id}`}
+                  className="hover:text-white"
+                >
+                  {item.name}
+                </Link>
+              ))}
           </div>
         </div>
 

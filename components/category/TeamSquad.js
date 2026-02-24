@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 
-const tabs = ["Kaleci", "Defans", "Orta Saha", "Hücum"];
+const tabs = ["Tüm Kadro", "Kaleci", "Defans", "Orta Saha", "Hücum"];
 
 const positionMap = {
   24: "Kaleci",
@@ -12,10 +12,11 @@ const positionMap = {
 };
 
 export default function TeamSquad({ squad = [], teamName }) {
-  const [active, setActive] = useState("Kaleci");
+  const [active, setActive] = useState("Tüm Kadro");
 
   const grouped = useMemo(() => {
     const result = {
+      "Tüm Kadro": [],
       Kaleci: [],
       Defans: [],
       "Orta Saha": [],
@@ -25,11 +26,21 @@ export default function TeamSquad({ squad = [], teamName }) {
     squad.forEach((item) => {
       const pos = positionMap[item.position_id] || "Orta Saha";
 
-      result[pos].push({
+      const player = {
         no: item.number || "-",
         name: item.name,
         photo: item.photo,
-      });
+      };
+
+      result[pos].push(player);
+      result["Tüm Kadro"].push(player); // 🔥 hepsine ekle
+    });
+
+    // 🔥 numaraya göre sırala
+    result["Tüm Kadro"].sort((a, b) => {
+      const na = isNaN(a.no) ? 999 : Number(a.no);
+      const nb = isNaN(b.no) ? 999 : Number(b.no);
+      return na - nb;
     });
 
     return result;

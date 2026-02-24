@@ -5,7 +5,6 @@ import NewsCard from "@/components/home/NewsCard";
 
 export default function CategoryGrid({ posts }) {
   const [showAll, setShowAll] = useState(false);
-
   const visiblePosts = showAll ? posts : posts.slice(0, 9);
 
   return (

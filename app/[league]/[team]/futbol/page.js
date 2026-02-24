@@ -17,14 +17,32 @@ async function getTeamPosts(team) {
   if (!res.ok) return [];
 
   const data = await res.json();
-  console.log(data);
   return data.data || [];
+}
+
+async function getTeamForm(teamId) {
+  if (!teamId) return [];
+
+  const API = process.env.NEXT_PUBLIC_API_URL;
+
+  try {
+    const res = await fetch(`${API}/api/sport/team/${teamId}/matches`, {
+      cache: "no-store",
+    });
+
+    const data = await res.json();
+    return data?.data?.form || [];
+  } catch (err) {
+    console.log("FORM ERROR:", err);
+    return [];
+  }
 }
 
 const mapPosts = (arr) =>
   arr.map((p) => ({
     id: p.id,
     title: p.title,
+    content: p.content,
     image: p.cover_image,
     slug: p.slug,
     sport: p.sport,
@@ -43,6 +61,7 @@ const normalize = (str) =>
 
 export default async function Page({ params }) {
   const { team } = await params;
+  let form = [];
   const trTeam =
     team === "galatasaray"
       ? "Galatasaray"
@@ -76,6 +95,7 @@ export default async function Page({ params }) {
     teamInfo = data.team || null;
     slug = teamInfo ? normalize(teamInfo.name) : null;
     name = teamInfo ? teamInfo.name : null;
+    form = await getTeamForm(teamInfo?.id);
     const rawPosts = await getTeamPosts(team);
     posts = mapPosts(rawPosts);
     futbol = posts.filter((p) => p.sport === "futbol");
@@ -126,17 +146,17 @@ export default async function Page({ params }) {
                 </p>
 
                 <div className="flex gap-1">
-                  {["G", "G", "B", "G", "M", "G"].map((item, i) => (
+                  {[...form].reverse().map((item, i) => (
                     <span
                       key={i}
                       className={`w-7 h-7 flex items-center justify-center text-xs font-bold rounded
-                      ${
-                        item === "G"
-                          ? "bg-green-500"
-                          : item === "B"
-                            ? "bg-yellow-400 text-black"
-                            : "bg-red-500"
-                      }`}
+              ${
+                item === "G"
+                  ? "bg-green-500"
+                  : item === "B"
+                    ? "bg-yellow-400 text-black"
+                    : "bg-red-500"
+              }`}
                     >
                       {item}
                     </span>
@@ -232,7 +252,7 @@ export default async function Page({ params }) {
         </div>
       </div>
 
-      <MatchStats teamId={teamInfo?.id} />
+      <MatchStats teamId={teamInfo?.id} teamName={teamInfo?.name} />
       <CategoryTopNews posts={futbol} />
       <PlayerStats squad={squad} teamName={teamInfo?.name} />
       <CategoryGrid posts={futbol} />

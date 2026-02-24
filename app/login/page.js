@@ -57,7 +57,6 @@ export default function LoginPage() {
 
       // decode
       const payload = JSON.parse(atob(data.token.split(".")[1]));
-      console.log(localStorage.getItem("token"));
       // yönlendirme
       if (payload.role === "admin") {
         router.push("/admin");

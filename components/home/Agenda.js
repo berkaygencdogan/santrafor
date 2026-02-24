@@ -18,7 +18,11 @@ export default function Agenda({ posts = [], title }) {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* 🔥 BÜYÜK HABER */}
           <div
-            onClick={() => router.push(`/news/${posts[0].slug}`)}
+            onClick={() =>
+              router.push(
+                `/${posts[0].league_slug}/${posts[0].team_slug}/${posts[0].slug}`,
+              )
+            }
             className="lg:col-span-2 relative rounded-2xl overflow-hidden cursor-pointer group"
           >
             <img
@@ -37,7 +41,11 @@ export default function Agenda({ posts = [], title }) {
             {posts.slice(1, 5).map((item) => (
               <div
                 key={item.id}
-                onClick={() => router.push(`/news/${item.slug}`)}
+                onClick={() =>
+                  router.push(
+                    `/${item.league_slug}/${item.team_slug}/${item.slug}`,
+                  )
+                }
                 className="relative rounded-xl overflow-hidden cursor-pointer group"
               >
                 <img

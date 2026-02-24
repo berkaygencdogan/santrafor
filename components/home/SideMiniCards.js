@@ -15,7 +15,9 @@ export default function SideMiniCards({ posts = [] }) {
       {posts.map((item) => (
         <div
           key={item.id}
-          onClick={() => router.push(`/news/${item.slug}`)}
+          onClick={() =>
+            router.push(`/${item.league_slug}/${item.team_slug}/${item.slug}`)
+          }
           className="flex gap-2 p-2 border rounded-lg cursor-pointer hover:shadow"
         >
           <img src={item.image} className="w-20 h-16 object-cover rounded" />

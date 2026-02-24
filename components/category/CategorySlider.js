@@ -108,7 +108,7 @@ export default function CategorySlider({ posts = [] }) {
                   setDirection(realIndex > active ? "right" : "left");
                   setActive(realIndex);
                 }}
-                className={`cursor-pointer border-2 transition ${
+                className={`relative cursor-pointer border-2 transition overflow-hidden ${
                   realIndex === active
                     ? "border-red-500 scale-105"
                     : "border-transparent opacity-70 hover:opacity-100"
@@ -118,6 +118,16 @@ export default function CategorySlider({ posts = [] }) {
                   src={item.image}
                   className="w-[90px] h-[60px] object-cover"
                 />
+
+                {/* 🔥 aktif thumb progress bar */}
+                {realIndex === active && (
+                  <div className="absolute left-0 bottom-0 w-full h-[3px] bg-white/20">
+                    <div
+                      key={active} // slide değişince reset
+                      className="h-full bg-yellow-400 animate-progress-5s"
+                    />
+                  </div>
+                )}
               </div>
             );
           })}

@@ -11,12 +11,14 @@ export default function Hero({ sliders = [], featured = [] }) {
     if (!sliders.length) return;
     const t = setInterval(() => {
       setActive((p) => (p + 1) % sliders.length);
-    }, 6000);
+    }, 5000);
     return () => clearInterval(t);
   }, [sliders.length]);
 
   if (!sliders.length) return null;
   const current = sliders[active];
+
+  console.log("current", current);
 
   return (
     <section className="bg-[#0b1220]">
@@ -24,7 +26,11 @@ export default function Hero({ sliders = [], featured = [] }) {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-6">
           {/* 🔥 SOL BÜYÜK */}
           <div
-            onClick={() => router.push(`/news/${current.slug}`)}
+            onClick={() =>
+              router.push(
+                `/${current.league_slug}/${current.team_slug}/${current.slug}`,
+              )
+            }
             className="relative rounded-2xl overflow-hidden cursor-pointer group"
           >
             <img
@@ -41,7 +47,13 @@ export default function Hero({ sliders = [], featured = [] }) {
             <h2 className="absolute left-6 bottom-8 right-6 text-white font-extrabold text-4xl leading-tight">
               {current.title}
             </h2>
-
+            {/* PROGRESS BAR */}
+            <div className="absolute left-0 bottom-0 w-full h-[3px] bg-white/20 overflow-hidden">
+              <div
+                key={active} // 🔥 her slide değişince reset
+                className="h-full bg-gradient-to-r from-yellow-400 to-yellow-300 animate-progress"
+              />
+            </div>
             {/* dots */}
             <div className="absolute left-6 bottom-2 flex gap-3">
               {sliders.map((_, i) => (
@@ -64,7 +76,11 @@ export default function Hero({ sliders = [], featured = [] }) {
             {/* ÜST FEATURED */}
             {featured[0] && (
               <div
-                onClick={() => router.push(`/news/${featured[0].slug}`)}
+                onClick={() =>
+                  router.push(
+                    `/${featured[0].league_slug}/${featured[0].team_slug}/${featured[0].slug}`,
+                  )
+                }
                 className="relative rounded-xl overflow-hidden cursor-pointer group"
               >
                 <img
@@ -87,7 +103,9 @@ export default function Hero({ sliders = [], featured = [] }) {
               {featured.slice(1, 10).map((p) => (
                 <div
                   key={p.id}
-                  onClick={() => router.push(`/news/${p.slug}`)}
+                  onClick={() =>
+                    router.push(`/${p.league_slug}/${p.team_slug}/${p.slug}`)
+                  }
                   className="relative rounded-lg overflow-hidden cursor-pointer group"
                 >
                   <img

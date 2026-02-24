@@ -48,7 +48,9 @@ export default function Header() {
           <LiveTicker />
           {/* SAĞ BİLGİ Günün Maçları yazacak */}
           <span className="absolute right-12 text-xl w-50 font-extrabold text-green-400 to-black py-1 rounded-full backdrop-blur">
-            ⚽ Günün Maçları
+            <Link href="/matches" className="hover:text-yellow-400">
+              ⚽ Günün Maçları
+            </Link>
           </span>
         </div>
       </div>
@@ -57,20 +59,36 @@ export default function Header() {
         <div className="max-w-[1400px] mx-auto px-4 h-[88px] flex items-center justify-between">
           {/* LEFT NAV */}
           <nav className="hidden md:flex gap-6 text-sm font-semibold tracking-wide">
-            <Link href="/besiktas/futbol" className="hover:text-yellow-400">
+            <Link
+              href="/superlig/besiktas/futbol"
+              className="hover:text-yellow-400"
+            >
               Beşiktaş
             </Link>
 
-            <Link href="/fenerbahce/futbol" className="hover:text-yellow-400">
+            <Link
+              href="/superlig/fenerbahce/futbol"
+              className="hover:text-yellow-400"
+            >
               Fenerbahçe
             </Link>
 
-            <Link href="/galatasaray/futbol" className="hover:text-yellow-400">
+            <Link
+              href="/superlig/galatasaray/futbol"
+              className="hover:text-yellow-400"
+            >
               Galatasaray
             </Link>
 
-            <Link href="/trabzonspor/futbol" className="hover:text-yellow-400">
+            <Link
+              href="/superlig/trabzonspor/futbol"
+              className="hover:text-yellow-400"
+            >
               Trabzonspor
+            </Link>
+
+            <Link href="/futbol/600" className="hover:text-yellow-400">
+              Trendyol Süper Lig
             </Link>
           </nav>
 
@@ -127,7 +145,7 @@ export default function Header() {
               </button>
             </div>
 
-            <Link href="/author" className="hover:text-yellow-400">
+            <Link href="/authors" className="hover:text-yellow-400">
               Yazarlar
             </Link>
           </nav>

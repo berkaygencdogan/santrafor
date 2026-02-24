@@ -13,9 +13,11 @@ export default function CategoryTopNews({ posts }) {
       {/* SOL - BÜYÜK */}
       <div
         className="group cursor-pointer"
-        onClick={() => router.push(`/news/${main?.slug}`)}
+        onClick={() =>
+          router.push(`/${main.league_slug}/${main.team_slug}/${main.slug}`)
+        }
       >
-        <div className="relative overflow-hidden rounded-xl h-[320px]">
+        <div className="relative overflow-hidden rounded-xl h-[92%]">
           <img
             src={main?.image || ""}
             alt={main?.title || ""}

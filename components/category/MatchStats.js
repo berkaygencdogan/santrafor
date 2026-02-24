@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function MatchStats({ teamId, teamName }) {
   const [matches, setMatches] = useState([]);
+
   const API = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
@@ -12,10 +13,36 @@ export default function MatchStats({ teamId, teamName }) {
     fetch(`${API}/api/sport/team/${teamId}/matches`)
       .then((r) => r.json())
       .then((res) => {
-        setMatches(res.data);
+        const data = res.data || {};
+        setMatches(data);
+
+        // 🔥 SON 6 MAÇTAN FORM HESAPLA
+        const pastMatches = data.past || [];
+
+        const form = pastMatches
+          .slice(0, 6)
+          .reverse() // 👉 en yeni sağda olsun
+          .map((m) => {
+            const isHome = m.home?.toLowerCase() === teamName?.toLowerCase();
+
+            if (isHome) {
+              if (m.homeScore > m.awayScore) return "G";
+              if (m.homeScore < m.awayScore) return "M";
+              return "B";
+            } else {
+              if (m.awayScore > m.homeScore) return "G";
+              if (m.awayScore < m.homeScore) return "M";
+              return "B";
+            }
+          });
+
+        // 🔥 parent'a gönder
+        if (onFormReady) onFormReady(form);
       })
-      .catch(console.error);
-  }, [teamId]);
+      .catch((err) => {
+        console.log("MATCH ERROR:", err);
+      });
+  }, [teamId, teamName]);
 
   const past = matches?.past || [];
   const upcoming = matches?.upcoming || [];
@@ -24,17 +51,18 @@ export default function MatchStats({ teamId, teamName }) {
     new Date(d).toLocaleDateString("tr-TR", {
       day: "2-digit",
       month: "short",
+      timeZone: "Europe/Istanbul",
     });
 
   return (
     <div className="max-w-[1400px] mx-auto px-4 mt-10 grid md:grid-cols-2 gap-6">
-      {/* SON MAÇLAR */}
+      {/* 🔥 SON MAÇLAR */}
       <div className="bg-[#111827] p-5 rounded-2xl shadow-lg">
         <h3 className="border-b border-red-500 pb-2 mb-4 font-semibold">
           SON MAÇLAR
         </h3>
 
-        {past.slice(0, 5).map((m) => {
+        {past.slice(0, 6).map((m) => {
           const isWin =
             (m.home === teamName && m.homeScore > m.awayScore) ||
             (m.away === teamName && m.awayScore > m.homeScore);
@@ -76,16 +104,16 @@ export default function MatchStats({ teamId, teamName }) {
         })}
       </div>
 
-      {/* FİKSTÜR */}
+      {/* 🔥 FİKSTÜR */}
       <div className="bg-[#111827] p-5 rounded-2xl shadow-lg">
         <h3 className="border-b border-red-500 pb-2 mb-4 font-semibold">
           FİKSTÜR
         </h3>
 
-        {upcoming.slice(0, 5).map((m) => (
+        {upcoming.slice(0, 6).map((m) => (
           <div
             key={m.id}
-            className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-white/5 transition"
+            className="flex items-center justify-between py-3.5 px-3 rounded-lg hover:bg-white/5 transition"
           >
             {/* HOME */}
             <div className="flex items-center gap-2 w-[35%]">

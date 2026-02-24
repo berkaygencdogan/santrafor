@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Editor } from "@tinymce/tinymce-react";
+import TagSelector from "@/components/admin/TagSelector";
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -182,44 +183,41 @@ export default function CreatePostPage() {
       <div className="mb-4">
         <p className="mb-2 text-sm text-gray-400">Etiketler</p>
 
-        {/* TAG BUTTONS */}
-        <div className="flex flex-wrap gap-2 mb-3">
-          {tags.map((t) => {
-            const selected = form.tags.includes(t.id);
+        <TagSelector
+          tags={tags}
+          selected={form.tags}
+          onChange={(newTags) => setForm({ ...form, tags: newTags })}
+          onCreateTag={async (name) => {
+            try {
+              const res = await fetch(`${API}/api/tags`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ name }),
+              });
 
-            return (
-              <button
-                key={t.id}
-                onClick={() => {
-                  if (selected) {
-                    setForm({
-                      ...form,
-                      tags: form.tags.filter((id) => id !== t.id),
-                    });
-                  } else {
-                    setForm({
-                      ...form,
-                      tags: [...form.tags, t.id],
-                    });
-                  }
-                }}
-                className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm transition
-                ${
-                  selected
-                    ? "bg-yellow-400 text-black"
-                    : "bg-gray-700 hover:bg-gray-600"
-                }`}
-              >
-                {t.name}
-                <span className="font-bold">{selected ? "✕" : "+"}</span>
-              </button>
-            );
-          })}
-        </div>
+              const data = await res.json();
 
-        {/* SEÇİLEN TAGLER */}
+              if (!res.ok) {
+                alert(data.error);
+                return null;
+              }
+
+              setTags((prev) => [...prev, data.data]);
+
+              return data.data;
+            } catch (err) {
+              console.log(err);
+              return null;
+            }
+          }}
+        />
+
+        {/* SEÇİLENLER */}
         {form.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="flex flex-wrap gap-2 mt-3">
             {form.tags.map((id) => {
               const tag = tags.find((t) => t.id === id);
               if (!tag) return null;
@@ -235,37 +233,6 @@ export default function CreatePostPage() {
             })}
           </div>
         )}
-
-        {/* TAG EKLE */}
-        <button
-          onClick={async () => {
-            const name = prompt("Yeni etiket adı");
-            if (!name) return;
-
-            const res = await fetch(`${API}/api/tags`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({ name }),
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-              setTags([...tags, data.data]);
-
-              setForm({
-                ...form,
-                tags: [...form.tags, data.data.id],
-              });
-            }
-          }}
-          className="mt-3 px-4 py-2 bg-green-500 rounded"
-        >
-          + Yeni Etiket
-        </button>
       </div>
 
       {/* STATUS */}
