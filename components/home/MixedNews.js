@@ -11,7 +11,9 @@ export default function MixedNews({ posts = [] }) {
         <div
           key={item.id}
           onClick={() =>
-            router.push(`/${item.league_slug}/${item.team_slug}/${item.slug}`)
+            router.push(
+              `/${item.league_slug || "futbol"}/${item.team || "genel"}/${item.slug}`,
+            )
           }
           className="relative rounded-xl overflow-hidden group cursor-pointer"
         >

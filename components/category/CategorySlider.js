@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CategorySlider({ posts = [] }) {
+  const router = useRouter();
   const [active, setActive] = useState(0);
   const [start, setStart] = useState(0);
   const [direction, setDirection] = useState("right");
 
   const visible = posts.slice(start, start + 10);
   const current = posts[active];
+
+  console.log(active, current);
 
   // 🔥 AUTO SLIDE
   useEffect(() => {
@@ -59,14 +63,20 @@ export default function CategorySlider({ posts = [] }) {
   return (
     <div className="w-full">
       {/* SLIDER */}
-      <div className="relative rounded-2xl overflow-hidden h-[450px]">
+      <div
+        className="relative rounded-2xl overflow-hidden h-[450px] cursor-pointer"
+        onClick={() => router.push(`${current.slug}`)}
+      >
         <div
           key={active}
           className={`absolute inset-0 transition-all duration-500 ease-in-out
             ${direction === "right" ? "animate-slideRight" : "animate-slideLeft"}
           `}
         >
-          <img src={current.image} className="w-full h-full object-cover" />
+          <img
+            src={current.image}
+            className="w-full h-full object-cover cursor-pointer"
+          />
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
 
@@ -78,21 +88,24 @@ export default function CategorySlider({ posts = [] }) {
         {/* ARROWS */}
         <button
           onClick={prev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-3xl z-10"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-3xl z-10 cursor-pointer"
         >
           ‹
         </button>
 
         <button
           onClick={next}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-3xl z-10"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-3xl z-10 cursor-pointer"
         >
           ›
         </button>
       </div>
 
       {/* THUMBNAILS */}
-      <div className="mt-3 ml-4 mb-3 overflow-hidden">
+      <div
+        className="mt-3 ml-4 mb-3 overflow-hidden"
+        onClick={() => router.push(`${current.slug}`)}
+      >
         <div className="flex gap-2">
           {visible.map((item, i) => {
             const realIndex = start + i;

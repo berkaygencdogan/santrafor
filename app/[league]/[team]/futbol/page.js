@@ -46,6 +46,7 @@ const mapPosts = (arr) =>
     image: p.cover_image,
     slug: p.slug,
     sport: p.sport,
+    team: p.team,
   }));
 
 const normalize = (str) =>
@@ -171,11 +172,7 @@ export default async function Page({ params }) {
               </div>
             </div>
             <div className="text-sm text-gray-500 mt-4 flex gap-4">
-              <SportSwitch
-                team={slug}
-                currentSport="futbol"
-                teamInfo={teamInfo}
-              />
+              <SportSwitch team={teamInfo?.name} currentSport="futbol" />
             </div>
           </div>
           <div className="bg-[#0f172a] rounded-2xl p-4 text-white w-full max-w-[420px]">

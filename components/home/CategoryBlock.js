@@ -29,7 +29,7 @@ export default function CategoryBlock({ cat, title }) {
           <div>
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
               {(cat.posts || []).slice(0, visible).map((item) => (
-                <NewsCard key={item.id} item={item} team={item.team} />
+                <NewsCard key={item.id} item={item} />
               ))}
             </div>
 

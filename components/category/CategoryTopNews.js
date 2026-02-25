@@ -7,15 +7,14 @@ export default function CategoryTopNews({ posts }) {
   const router = useRouter();
   const main = posts[0];
   const small = posts.slice(1, 5); // sadece 4 tane
+  if (!posts?.length) return null;
 
   return (
     <div className="max-w-[1400px] mx-auto px-4 mt-10 grid lg:grid-cols-2 gap-6">
       {/* SOL - BÜYÜK */}
       <div
         className="group cursor-pointer"
-        onClick={() =>
-          router.push(`/${main.league_slug}/${main.team_slug}/${main.slug}`)
-        }
+        onClick={() => router.push(`${main.slug}`)}
       >
         <div className="relative overflow-hidden rounded-xl h-[92%]">
           <img

@@ -202,7 +202,7 @@ export default function AuthorDetailPage() {
                   return (
                     <Link
                       key={post.id}
-                      href={`/${post.league_slug}/${post.team_slug}/${post.slug}`}
+                      href={`/${post.league_name}/${post.team}/${post.slug}`}
                       className="group rounded-2xl overflow-hidden bg-[#111827] border border-white/10 hover:bg-[#1a2236] transition block"
                     >
                       {/* IMAGE */}
@@ -249,7 +249,7 @@ export default function AuthorDetailPage() {
 
       {/* SAĞ SIDEBAR */}
       <aside className="space-y-4">
-        <StandingsContainer leagueName="La Liga" />
+        <StandingsContainer leagueName="Süper Lig" leagueId="600" />
       </aside>
     </main>
   );

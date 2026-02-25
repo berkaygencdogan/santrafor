@@ -14,7 +14,7 @@ export default function NewsDetailPage() {
   useEffect(() => {
     if (!slug) return;
 
-    fetch(`${API}/api/posts/${slug}`)
+    fetch(`${API}/api/posts/slug/${slug}`)
       .then((r) => r.json())
       .then((d) => {
         if (d.success) setNews(d.data);
@@ -109,7 +109,7 @@ export default function NewsDetailPage() {
             {latest.map((item) => (
               <Link
                 key={item.id}
-                href={`/${item.league_slug}/${item.team_slug}/${item.slug}`}
+                href={`/${item.league_slug}/${item.team}/${item.slug}`}
                 className="flex gap-3 items-center"
               >
                 <img

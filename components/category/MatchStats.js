@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function MatchStats({ teamId, teamName }) {
   const [matches, setMatches] = useState([]);
-
+  const router = useRouter();
   const API = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
@@ -70,7 +71,8 @@ export default function MatchStats({ teamId, teamName }) {
           return (
             <div
               key={m.id}
-              className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-white/5 transition"
+              className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-white/5 transition cursor-pointer"
+              onClick={() => router.push(`/matches/${m.id}`)}
             >
               {/* HOME */}
               <div className="flex items-center gap-2 w-[35%]">

@@ -20,7 +20,7 @@ export default function Agenda({ posts = [], title }) {
           <div
             onClick={() =>
               router.push(
-                `/${posts[0].league_slug}/${posts[0].team_slug}/${posts[0].slug}`,
+                `/${posts[0].league_slug || "futbol"}/${posts[0].team || "genel"}/${posts[0].slug}`,
               )
             }
             className="lg:col-span-2 relative rounded-2xl overflow-hidden cursor-pointer group"
@@ -43,7 +43,7 @@ export default function Agenda({ posts = [], title }) {
                 key={item.id}
                 onClick={() =>
                   router.push(
-                    `/${item.league_slug}/${item.team_slug}/${item.slug}`,
+                    `/${item.league_slug || "futbol"}/${item.team || "genel"}/${item.slug}`,
                   )
                 }
                 className="relative rounded-xl overflow-hidden cursor-pointer group"

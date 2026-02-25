@@ -20,7 +20,9 @@ export default function NewsCard({ item }) {
   return (
     <div
       onClick={() =>
-        router.push(`/${item.league_slug}/${item.team_slug}/${item.slug}`)
+        router.push(
+          `/${item.category?.toLowerCase() || item.league_slug || item.sport || "futbol"}/${item.team || "genel"}/${item.slug}`,
+        )
       }
       className="cursor-pointer rounded-xl overflow-hidden group"
     >

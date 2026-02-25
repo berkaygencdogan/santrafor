@@ -2,7 +2,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default async function LeaguePage({ params }) {
   const { id } = await params; // artık slug = name olacak
-  console.log("object", id);
   let standings = [];
 
   try {

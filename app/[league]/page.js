@@ -36,7 +36,7 @@ export default function NewsPage() {
               </p>
 
               <Link
-                href={`/${item.league_slug}/${item.team_slug}/${item.slug}`}
+                href={`/${item.league_slug}/${item.team}/${item.slug}`}
                 className="text-green-600 font-semibold"
               >
                 Devamını oku →

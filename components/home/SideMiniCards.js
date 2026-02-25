@@ -16,7 +16,9 @@ export default function SideMiniCards({ posts = [] }) {
         <div
           key={item.id}
           onClick={() =>
-            router.push(`/${item.league_slug}/${item.team_slug}/${item.slug}`)
+            router.push(
+              `/${item.category.toLowerCase() || item.league_slug || "futbol"}/${item.team || "genel"}/${item.slug}`,
+            )
           }
           className="flex gap-2 p-2 border rounded-lg cursor-pointer hover:shadow"
         >

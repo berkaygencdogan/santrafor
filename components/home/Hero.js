@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import buildPostUrl from "@/lib/postUrl";
 
 export default function Hero({ sliders = [], featured = [] }) {
   const router = useRouter();
@@ -17,9 +18,6 @@ export default function Hero({ sliders = [], featured = [] }) {
 
   if (!sliders.length) return null;
   const current = sliders[active];
-
-  console.log("current", current);
-
   return (
     <section className="bg-[#0b1220]">
       <div className="max-w-[1400px] mx-auto px-4 py-6">
@@ -28,7 +26,7 @@ export default function Hero({ sliders = [], featured = [] }) {
           <div
             onClick={() =>
               router.push(
-                `/${current.league_slug}/${current.team_slug}/${current.slug}`,
+                `/${current.league_slug || current.category.toLowerCase() || "futbol"}/${current.team}/${current.slug}`,
               )
             }
             className="relative rounded-2xl overflow-hidden cursor-pointer group"
@@ -78,7 +76,7 @@ export default function Hero({ sliders = [], featured = [] }) {
               <div
                 onClick={() =>
                   router.push(
-                    `/${featured[0].league_slug}/${featured[0].team_slug}/${featured[0].slug}`,
+                    `/${featured[0].league_slug || featured[0].category.toLowerCase() || "futbol"}/${featured[0].team}/${featured[0].slug}`,
                   )
                 }
                 className="relative rounded-xl overflow-hidden cursor-pointer group"
@@ -104,7 +102,9 @@ export default function Hero({ sliders = [], featured = [] }) {
                 <div
                   key={p.id}
                   onClick={() =>
-                    router.push(`/${p.league_slug}/${p.team_slug}/${p.slug}`)
+                    router.push(
+                      `/${p.league_slug || p.category.toLowerCase() || "futbol"}/${p.team}/${p.slug}`,
+                    )
                   }
                   className="relative rounded-lg overflow-hidden cursor-pointer group"
                 >

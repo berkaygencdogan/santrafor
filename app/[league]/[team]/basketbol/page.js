@@ -46,6 +46,8 @@ const mapPosts = (arr) =>
     slug: p.slug,
     image: p.cover_image,
     date: p.created_at,
+    team: p.team,
+    sport: p.sport,
   }));
 
 /* ================= PAGE ================= */
@@ -73,7 +75,7 @@ export default async function Page({ params }) {
     getPosts(team),
     getTeamInfo(trName),
   ]);
-
+  console.log(rawPosts);
   const posts = mapPosts(rawPosts);
 
   return (
@@ -90,7 +92,7 @@ export default async function Page({ params }) {
           <div className="font-bold text-7xl">{teamInfo?.name}</div>
           <div className="text-sm text-gray-500 mt-4 flex gap-4">
             <SportSwitch
-              team={teamInfo ? teamInfo.name.toLowerCase() : team}
+              team={team ? team : teamInfo.name.toLowerCase()}
               currentSport="basketbol"
               teamInfo={teamInfo}
             />

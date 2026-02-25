@@ -1,6 +1,17 @@
 import Link from "next/link";
 
-export default function SportSwitch({ team, currentSport, teamInfo }) {
+export default function SportSwitch({ team, currentSport }) {
+  const normalize = (str) =>
+    str
+      ?.toLowerCase()
+      .replace(/ç/g, "c")
+      .replace(/ğ/g, "g")
+      .replace(/ı/g, "i")
+      .replace(/ö/g, "o")
+      .replace(/ş/g, "s")
+      .replace(/ü/g, "u")
+      .replace(/\s+/g, "");
+
   const sports = [
     { key: "futbol", label: "Futbol", icon: "⚽" },
     { key: "basketbol", label: "Basketbol", icon: "🏀" },
@@ -14,7 +25,7 @@ export default function SportSwitch({ team, currentSport, teamInfo }) {
       {filtered.map((sport) => (
         <Link
           key={sport.key}
-          href={`/${team}/${sport.key}`}
+          href={`/superlig/${normalize(team)}/${sport.key}`}
           className="group bg-[#111827] rounded-2xl p-10 flex flex-col items-center justify-center text-center border border-white/10 hover:border-yellow-400 hover:bg-[#1a2236] transition-all duration-300"
         >
           <div className="text-5xl mb-4 group-hover:scale-110 transition">

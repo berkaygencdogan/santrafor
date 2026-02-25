@@ -21,6 +21,7 @@ async function getPosts({ sport, type, limit = 5 }) {
   if (!res.ok) return [];
 
   const data = await res.json();
+
   return data.data || [];
 }
 
@@ -33,7 +34,8 @@ const mapPosts = (arr) =>
     image: p.cover_image,
     slug: p.slug,
     category: p.sport?.toUpperCase(),
-    team: p.team || "",
+    team: p.team_slug || null,
+    league_slug: p.league_slug,
   }));
 
 /* ================= PAGE ================= */
@@ -65,7 +67,6 @@ export default async function Home() {
   ]);
 
   /* ================= CATEGORY DATA ================= */
-
   const categories = {
     futbol: {
       sliders: mapPosts(futbolNews.slice(0, 5)),

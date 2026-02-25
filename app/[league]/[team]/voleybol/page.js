@@ -46,6 +46,8 @@ const mapPosts = (arr) =>
     slug: p.slug,
     image: p.cover_image,
     date: p.created_at,
+    team: p.team,
+    sport: p.sport,
   }));
 
 /* ================= PAGE ================= */

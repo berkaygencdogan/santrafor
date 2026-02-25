@@ -129,8 +129,6 @@ export default function EditNewsPage() {
     );
   }
 
-  console.log(categories, tags, form);
-
   /* ================= UI ================= */
 
   return (
