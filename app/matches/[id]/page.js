@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import { FaFutbol, FaExchangeAlt, FaSquare } from "react-icons/fa";
+import { FaFutbol, FaExchangeAlt, FaSquare, FaTv } from "react-icons/fa";
+import { GiGoalKeeper } from "react-icons/gi";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -68,36 +69,6 @@ function TabButton({ active, children, onClick }) {
   );
 }
 
-function HeaderIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="5" r="3" fill="#374151" />
-      <path
-        d="M12 8L12 14M12 10L8 12M12 10L16 12"
-        stroke="#374151"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function RightFootIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <path d="M6 14C6 10 9 8 12 8C15 8 18 10 18 14V18H6V14Z" fill="#374151" />
-    </svg>
-  );
-}
-
-function LeftFootIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <path d="M18 14C18 10 15 8 12 8C9 8 6 10 6 14V18H18V14Z" fill="#374151" />
-    </svg>
-  );
-}
-
 function getGoalDetailIcon(ev) {
   const info = (ev?.info || ev?.addition || "").toLowerCase();
 
@@ -119,9 +90,22 @@ function getGoalDetailIcon(ev) {
 }
 function getEventIcon(ev) {
   const type = ev?.type?.name?.toLowerCase() || "";
+  const info = (ev?.info || ev?.addition || "").toLowerCase();
+
+  if (type.includes("own goal")) {
+    return <FaFutbol className="text-red-600" />;
+  }
 
   if (type.includes("goal")) {
     return <FaFutbol className="text-green-600" />;
+  }
+
+  if (type.includes("var")) {
+    if (info.includes("disallowed")) {
+      return <FaTv className="text-red-600" />;
+    } else {
+      return <FaTv className="text-green-600" />;
+    }
   }
 
   if (type.includes("substitution")) {
@@ -136,6 +120,10 @@ function getEventIcon(ev) {
     return <FaSquare className="text-red-600" />;
   }
 
+  if (type.includes("penalty")) {
+    return <GiGoalKeeper className="text-green-600" />;
+  }
+
   return <span>•</span>;
 }
 
@@ -144,7 +132,6 @@ function EventRow({ ev, side }) {
   const type = ev?.type?.name || "";
   const player = ev?.player?.display_name || ev?.player_name || "-";
   const info = ev?.info || ev?.addition || "";
-
   const isRight = side === "away";
 
   return (
@@ -168,7 +155,7 @@ function EventRow({ ev, side }) {
         )}
       >
         {/* 🔥 SOL → ANA ICON */}
-        <div className="text-lg shrink-0">{getEventIcon(ev)}</div>
+        <div className="text-lg shrink-0 text-black">{getEventIcon(ev)}</div>
 
         {/* 🔥 ORTA → TEXT */}
         <div className="flex-1 min-w-0">

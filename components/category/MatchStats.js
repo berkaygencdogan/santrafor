@@ -3,11 +3,32 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function MatchStats({ teamId, teamName }) {
+export default function MatchStats({ teamId, teamName, league }) {
   const [matches, setMatches] = useState([]);
   const router = useRouter();
   const API = process.env.NEXT_PUBLIC_API_URL;
+  const getCurrentSeason = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
 
+    // sezon genelde Ağustos'ta başlar
+    if (month >= 8) {
+      return `${year}-${year + 1}`;
+    } else {
+      return `${year - 1}-${year}`;
+    }
+  };
+  const toSlug = (str) =>
+    str
+      ?.toLowerCase()
+      .replace(/ç/g, "c")
+      .replace(/ğ/g, "g")
+      .replace(/ı/g, "i")
+      .replace(/ö/g, "o")
+      .replace(/ş/g, "s")
+      .replace(/ü/g, "u")
+      .replace(/[^a-z0-9]/g, "");
   useEffect(() => {
     if (!teamId) return;
 
@@ -55,13 +76,30 @@ export default function MatchStats({ teamId, teamName }) {
       timeZone: "Europe/Istanbul",
     });
 
+  const formatHour = (d) =>
+    new Date(d).toLocaleTimeString("tr-TR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Europe/Istanbul",
+    });
   return (
     <div className="max-w-[1400px] mx-auto px-4 mt-10 grid md:grid-cols-2 gap-6">
       {/* 🔥 SON MAÇLAR */}
       <div className="bg-[#111827] p-5 rounded-2xl shadow-lg">
-        <h3 className="border-b border-red-500 pb-2 mb-4 font-semibold">
-          SON MAÇLAR
-        </h3>
+        <div className="flex justify-between border-b border-red-500 pb-2 mb-4 font-semibold">
+          <h3 className=" font-semibold">SON MAÇLAR</h3>
+          <h3
+            className=" font-semibold cursor-pointer hover:bg-yellow-400"
+            onClick={() => {
+              const season = getCurrentSeason();
+              const teamSlug = toSlug(teamName);
+
+              router.push(`/${league}/${teamSlug}/fixtures/${season}`);
+            }}
+          >
+            TÜM MAÇLAR {`---->`}
+          </h3>
+        </div>
 
         {past.slice(0, 6).map((m) => {
           const isWin =
@@ -108,9 +146,20 @@ export default function MatchStats({ teamId, teamName }) {
 
       {/* 🔥 FİKSTÜR */}
       <div className="bg-[#111827] p-5 rounded-2xl shadow-lg">
-        <h3 className="border-b border-red-500 pb-2 mb-4 font-semibold">
-          FİKSTÜR
-        </h3>
+        <div className="flex justify-between border-b border-red-500 pb-2 mb-4 font-semibold">
+          <h3 className=" font-semibold">FİKSTÜR</h3>
+          <h3
+            className=" font-semibold cursor-pointer hover:bg-yellow-400"
+            onClick={() => {
+              const season = getCurrentSeason();
+              const teamSlug = toSlug(teamName);
+
+              router.push(`/${league}/${teamSlug}/fixtures/${season}`);
+            }}
+          >
+            TÜM FİKSTÜR {`---->`}
+          </h3>
+        </div>
 
         {upcoming.slice(0, 6).map((m) => (
           <div
@@ -125,7 +174,7 @@ export default function MatchStats({ teamId, teamName }) {
 
             {/* VS */}
             <div className="px-3 py-1 bg-gray-700 text-gray-300 rounded-md text-xs">
-              VS
+              {formatHour(m.date)}
             </div>
 
             {/* AWAY */}

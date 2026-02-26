@@ -1,4 +1,5 @@
 import CategoryGrid from "@/components/category/CategoryGrid";
+import Hero from "@/components/home/Hero";
 import SportSwitch from "@/components/sport/SportSwitch";
 
 /* ================= POSTS ================= */
@@ -50,8 +51,6 @@ const mapPosts = (arr) =>
     sport: p.sport,
   }));
 
-/* ================= PAGE ================= */
-
 export default async function Page({ params }) {
   const { team } = await params;
 
@@ -75,8 +74,10 @@ export default async function Page({ params }) {
     getPosts(team),
     getTeamInfo(trName),
   ]);
-  console.log(rawPosts);
+
   const posts = mapPosts(rawPosts);
+  const sliderPosts = posts.slice(0, 5); // ilk 5
+  const featuredPosts = posts.slice(5, 9); // sonraki 4
 
   return (
     <div className="bg-[#0B1220] min-h-screen text-white">
@@ -102,6 +103,8 @@ export default async function Page({ params }) {
 
       <div className="max-w-[1400px] mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold mb-6">{trName} Basketbol</h1>
+
+        <Hero sliders={sliderPosts} featured={featuredPosts} />
 
         <CategoryGrid posts={posts} />
       </div>

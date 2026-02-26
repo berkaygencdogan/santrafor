@@ -5,78 +5,52 @@ import { useRouter } from "next/navigation";
 
 export default function CategorySlider({ posts = [] }) {
   const router = useRouter();
+
+  // 🔥 sadece 10 post
+  const limitedPosts = posts.slice(0, 10);
+
   const [active, setActive] = useState(0);
-  const [start, setStart] = useState(0);
   const [direction, setDirection] = useState("right");
 
-  const visible = posts.slice(start, start + 10);
-  const current = posts[active];
-
-  console.log(active, current);
+  const current = limitedPosts[active];
 
   // 🔥 AUTO SLIDE
   useEffect(() => {
-    if (!posts.length) return;
+    if (!limitedPosts.length) return;
 
     const t = setInterval(() => {
       next();
     }, 5000);
 
     return () => clearInterval(t);
-  }, [active, posts.length]);
+  }, [active, limitedPosts.length]);
 
   const next = () => {
     setDirection("right");
-
-    const newActive = (active + 1) % posts.length;
-    setActive(newActive);
-
-    // strip kaydır
-    if (newActive >= start + 10) {
-      setStart((prev) => prev + 1);
-    }
-
-    // başa dönünce reset
-    if (newActive === 0) {
-      setStart(0);
-    }
+    setActive((prev) => (prev + 1) % limitedPosts.length);
   };
 
   const prev = () => {
     setDirection("left");
-
-    const newActive = (active - 1 + posts.length) % posts.length;
-    setActive(newActive);
-
-    if (newActive < start) {
-      setStart((prev) => Math.max(prev - 1, 0));
-    }
-
-    // en sona gidince strip sona gelsin
-    if (newActive === posts.length - 1) {
-      setStart(Math.max(posts.length - 10, 0));
-    }
+    setActive((prev) => (prev - 1 + limitedPosts.length) % limitedPosts.length);
   };
 
-  if (!posts.length) return null;
+  if (!limitedPosts.length) return null;
 
   return (
     <div className="w-full">
-      {/* SLIDER */}
+      {/* 🔥 MAIN SLIDER */}
       <div
         className="relative rounded-2xl overflow-hidden h-[450px] cursor-pointer"
-        onClick={() => router.push(`${current.slug}`)}
+        onClick={() => router.push(current.slug)}
       >
         <div
           key={active}
           className={`absolute inset-0 transition-all duration-500 ease-in-out
-            ${direction === "right" ? "animate-slideRight" : "animate-slideLeft"}
-          `}
+          ${direction === "right" ? "animate-slideRight" : "animate-slideLeft"}
+        `}
         >
-          <img
-            src={current.image}
-            className="w-full h-full object-cover cursor-pointer"
-          />
+          <img src={current.image} className="w-full h-full object-cover" />
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
 
@@ -85,65 +59,65 @@ export default function CategorySlider({ posts = [] }) {
           </h2>
         </div>
 
-        {/* ARROWS */}
+        {/* 🔥 ARROWS */}
         <button
-          onClick={prev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-3xl z-10 cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            prev();
+          }}
+          className="absolute left-0 top-1/2 -translate-y-1/2 text-white text-3xl z-10 h-full w-16 flex items-center justify-center bg-black/20 hover:bg-black/40"
         >
           ‹
         </button>
 
         <button
-          onClick={next}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-3xl z-10 cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            next();
+          }}
+          className="absolute right-0 top-1/2 -translate-y-1/2 text-white text-3xl z-10 h-full w-16 flex items-center justify-center bg-black/20 hover:bg-black/40"
         >
           ›
         </button>
       </div>
 
-      {/* THUMBNAILS */}
-      <div
-        className="mt-3 ml-4 mb-3 overflow-hidden"
-        onClick={() => router.push(`${current.slug}`)}
-      >
+      {/* 🔥 THUMBNAILS */}
+      <div className="mt-3 ml-4 mb-3 overflow-hidden">
         <div className="flex gap-2">
-          {visible.map((item, i) => {
-            const realIndex = start + i;
+          {limitedPosts.map((item, i) => (
+            <div
+              key={item.id}
+              onClick={(e) => {
+                e.stopPropagation();
+                setDirection(i > active ? "right" : "left");
+                setActive(i);
+              }}
+              onMouseEnter={() => {
+                setDirection(i > active ? "right" : "left");
+                setActive(i);
+              }}
+              className={`relative cursor-pointer border-2 transition overflow-hidden ${
+                i === active
+                  ? "border-red-500 scale-105"
+                  : "border-transparent opacity-70 hover:opacity-100"
+              }`}
+            >
+              <img
+                src={item.image}
+                className="w-[90px] h-[60px] object-cover"
+              />
 
-            return (
-              <div
-                key={item.id}
-                onClick={() => {
-                  setDirection(realIndex > active ? "right" : "left");
-                  setActive(realIndex);
-                }}
-                onMouseEnter={() => {
-                  setDirection(realIndex > active ? "right" : "left");
-                  setActive(realIndex);
-                }}
-                className={`relative cursor-pointer border-2 transition overflow-hidden ${
-                  realIndex === active
-                    ? "border-red-500 scale-105"
-                    : "border-transparent opacity-70 hover:opacity-100"
-                }`}
-              >
-                <img
-                  src={item.image}
-                  className="w-[90px] h-[60px] object-cover"
-                />
-
-                {/* 🔥 aktif thumb progress bar */}
-                {realIndex === active && (
-                  <div className="absolute left-0 bottom-0 w-full h-[3px] bg-white/20">
-                    <div
-                      key={active} // slide değişince reset
-                      className="h-full bg-yellow-400 animate-progress-5s"
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              {/* 🔥 aktif thumb progress bar */}
+              {i === active && (
+                <div className="absolute left-0 bottom-0 w-full h-[3px] bg-white/20">
+                  <div
+                    key={active}
+                    className="h-full bg-yellow-400 animate-progress-5s"
+                  />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

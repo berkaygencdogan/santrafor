@@ -25,8 +25,6 @@ async function getPosts({ sport, type, limit = 5 }) {
   return data.data || [];
 }
 
-/* ================= MAPPER ================= */
-
 const mapPosts = (arr) =>
   arr.map((p) => ({
     id: p.id,
