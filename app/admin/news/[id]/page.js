@@ -258,11 +258,27 @@ export default function EditNewsPage() {
         value={form.content}
         onEditorChange={(content) => setForm({ ...form, content })}
         init={{
-          height: 400,
-          menubar: false,
-          plugins: ["link", "image", "code", "table", "lists", "fullscreen"],
+          selector: "textarea#default-editor",
+          plugins: [
+            "advlist",
+            "anchor",
+            "autolink",
+            "charmap",
+            "code",
+            "fullscreen",
+            "help",
+            "image",
+            "insertdatetime",
+            "link",
+            "lists",
+            "media",
+            "preview",
+            "searchreplace",
+            "table",
+            "visualblocks",
+          ],
           toolbar:
-            "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen",
+            "undo redo | styles | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
 
           images_upload_handler: async (blobInfo) => {
             const formData = new FormData();

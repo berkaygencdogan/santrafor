@@ -251,11 +251,27 @@ export default function CreatePostPage() {
           value={form.content}
           onEditorChange={(content) => setForm({ ...form, content })}
           init={{
-            height: 400,
-            menubar: false,
-            plugins: ["link", "image", "code", "table", "lists", "fullscreen"],
+            selector: "textarea#default-editor",
+            plugins: [
+              "advlist",
+              "anchor",
+              "autolink",
+              "charmap",
+              "code",
+              "fullscreen",
+              "help",
+              "image",
+              "insertdatetime",
+              "link",
+              "lists",
+              "media",
+              "preview",
+              "searchreplace",
+              "table",
+              "visualblocks",
+            ],
             toolbar:
-              "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen",
+              "undo redo | styles | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
 
             images_upload_handler: async (blobInfo) => {
               const formData = new FormData();
@@ -272,6 +288,8 @@ export default function CreatePostPage() {
               const data = await res.json();
               return data.url;
             },
+            content_style:
+              "body { font-family: Inter, Arial, sans-serif; font-size: 15px; }",
           }}
         />
       </div>
