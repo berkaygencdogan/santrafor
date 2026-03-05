@@ -2,63 +2,68 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import buildPostUrl from "@/lib/postUrl";
 
 export default function Hero({ sliders = [], featured = [] }) {
+  console.log("a", sliders);
   const router = useRouter();
   const [active, setActive] = useState(0);
 
   useEffect(() => {
     if (!sliders.length) return;
+
     const t = setInterval(() => {
       setActive((p) => (p + 1) % sliders.length);
     }, 5000);
+
     return () => clearInterval(t);
   }, [sliders.length]);
 
   if (!sliders.length) return null;
+
   const current = sliders[active];
+
+  const goPost = (p) => {
+    router.push(
+      `/${p.league_slug || p.sport}/${p.team_slug || "genel"}/${p.slug}`,
+    );
+  };
+
   return (
     <section className="bg-[#0b1220]">
       <div className="max-w-[1400px] mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-6">
-          {/* 🔥 SOL BÜYÜK */}
+          {/* SOL BÜYÜK */}
           <div
-            onClick={() =>
-              router.push(
-                `/${current.league_slug || current.category.toLowerCase() || "futbol"}/${current.team}/${current.slug}`,
-              )
-            }
+            onClick={() => goPost(current)}
             className="relative rounded-2xl overflow-hidden cursor-pointer group"
           >
             <img
-              src={current.image}
+              src={current.cover_image || current.image}
               className="w-full h-[520px] object-cover group-hover:scale-105 transition"
               alt={current.title}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-            <span className="absolute left-6 bottom-24 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded">
-              FUTBOL
-            </span>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
             <h2 className="absolute left-6 bottom-8 right-6 text-white font-extrabold text-4xl leading-tight">
               {current.title}
             </h2>
+
             {/* PROGRESS BAR */}
             <div className="absolute left-0 bottom-0 w-full h-[3px] bg-white/20 overflow-hidden">
               <div
-                key={active} // 🔥 her slide değişince reset
+                key={active}
                 className="h-full bg-gradient-to-r from-yellow-400 to-yellow-300 animate-progress"
               />
             </div>
-            {/* dots */}
+
+            {/* DOTS */}
             <div className="absolute left-6 bottom-2 flex gap-3">
               {sliders.map((_, i) => (
                 <button
                   key={i}
                   onClick={(e) => {
-                    e.stopPropagation(); // 🔥 click çakışmasını engeller
+                    e.stopPropagation();
                     setActive(i);
                   }}
                   className={`h-2 w-2 rounded-full transition ${
@@ -69,51 +74,48 @@ export default function Hero({ sliders = [], featured = [] }) {
             </div>
           </div>
 
-          {/* 🔥 SAĞ */}
+          {/* SAĞ BLOK */}
           <div className="rounded-2xl bg-[#0f172a] p-5">
             {/* ÜST FEATURED */}
             {featured[0] && (
               <div
-                onClick={() =>
-                  router.push(
-                    `/${featured[0].league_slug || featured[0].category.toLowerCase() || "futbol"}/${featured[0].team}/${featured[0].slug}`,
-                  )
-                }
+                onClick={() => goPost(featured[0])}
                 className="relative rounded-xl overflow-hidden cursor-pointer group"
               >
                 <img
-                  src={featured[0].image}
+                  src={featured[0].cover_image}
                   className="w-full h-[240px] object-cover group-hover:scale-105 transition"
                   alt={featured[0].title}
                 />
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+
                 <span className="absolute left-3 bottom-12 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
                   ÖNE ÇIKAN
                 </span>
+
                 <h3 className="absolute left-3 right-3 bottom-3 text-white font-bold">
                   {featured[0].title}
                 </h3>
               </div>
             )}
 
-            {/* ALT 3 */}
+            {/* ALT HABERLER */}
             <div className="grid grid-cols-3 gap-3 mt-4">
-              {featured.slice(1, 10).map((p) => (
+              {featured.slice(1, 4).map((p) => (
                 <div
                   key={p.id}
-                  onClick={() =>
-                    router.push(
-                      `/${p.league_slug || p.category.toLowerCase() || "futbol"}/${p.team}/${p.slug}`,
-                    )
-                  }
+                  onClick={() => goPost(p)}
                   className="relative rounded-lg overflow-hidden cursor-pointer group"
                 >
                   <img
-                    src={p.image}
+                    src={p.cover_image}
                     className="w-full h-[110px] object-cover group-hover:scale-105 transition"
                     alt={p.title}
                   />
+
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+
                   <p className="absolute left-2 right-2 bottom-2 text-[11px] text-white font-semibold leading-snug">
                     {p.title}
                   </p>

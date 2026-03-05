@@ -3,31 +3,40 @@
 import NewsCard from "@/components/home/NewsCard";
 import { useRouter } from "next/navigation";
 
-export default function CategoryTopNews({ posts }) {
+export default function CategoryTopNews({ posts = [] }) {
   const router = useRouter();
+
+  if (!posts.length) return null;
+
   const main = posts[0];
-  const small = posts.slice(1, 5); // sadece 4 tane
-  if (!posts?.length) return null;
+  const small = posts.slice(1, 5);
+
+  const getImage = (item) => item.image || item.cover_image;
+
+  const go = (item) => {
+    router.push(
+      `/${item.sport || "futbol"}/${item.team || item.team_slug || "genel"}/${item.slug}`,
+    );
+  };
 
   return (
     <div className="max-w-[1400px] mx-auto px-4 mt-10 grid lg:grid-cols-2 gap-6">
-      {/* SOL - BÜYÜK */}
-      <div
-        className="group cursor-pointer"
-        onClick={() => router.push(`${main.slug}`)}
-      >
+      {/* SOL - BÜYÜK HABER */}
+
+      <div className="group cursor-pointer" onClick={() => go(main)}>
         <div className="relative overflow-hidden rounded-xl h-[92%]">
           <img
-            src={main?.image || ""}
-            alt={main?.title || ""}
+            src={getImage(main)}
+            alt={main.title}
             className="w-full h-full object-cover group-hover:scale-105 transition"
           />
         </div>
 
-        <h2 className="mt-3 text-lg font-bold leading-snug">{main?.title}</h2>
+        <h2 className="mt-3 text-lg font-bold leading-snug">{main.title}</h2>
       </div>
 
-      {/* SAĞ - 4 KÜÇÜK */}
+      {/* SAĞ - 4 HABER */}
+
       <div className="grid grid-cols-2 gap-6">
         {small.map((item) => (
           <NewsCard key={item.id} item={item} />

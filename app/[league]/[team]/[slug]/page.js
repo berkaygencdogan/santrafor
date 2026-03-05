@@ -6,6 +6,7 @@ import Link from "next/link";
 
 export default function NewsDetailPage() {
   const { slug, league, team } = useParams();
+
   const API = process.env.NEXT_PUBLIC_API_URL;
 
   const [allPosts, setAllPosts] = useState([]);
@@ -122,19 +123,19 @@ export default function NewsDetailPage() {
       </div>
 
       {/* RIGHT */}
-      <div className="space-y-6">
+      <div className="space-y-6 sticky top-24 self-start">
         <div className="bg-[#1F1F2E] rounded-2xl p-4">
           <h3 className="font-bold mb-3">Son Eklenenler</h3>
 
           {latest.map((item) => (
             <Link
               key={item.id}
-              href={`/${item.league_slug}/${item.team}/${item.slug}`}
-              className="flex gap-3 items-center"
+              href={`/${item.league_slug}/${item.team_slug}/${item.slug}`}
+              className="flex gap-3 items-center border-gray-500 border-1 rounded-2xl  mt-3 hover:text-yellow-400"
             >
               <img
                 src={item.cover_image}
-                className="w-16 h-16 object-cover rounded-lg"
+                className="w-20 h-20 object-cover rounded-lg"
               />
               <span className="text-sm">{item.title}</span>
             </Link>

@@ -21,23 +21,36 @@ export default function NewsPage() {
         {news.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-2xl shadow-md overflow-hidden"
+            className="bg-[#1F1F2E] rounded-2xl shadow-md overflow-hidden hover:scale-[1.02] transition"
           >
+            {/* RESİM */}
+
             <img
               src={item.cover_image}
+              alt={item.title}
               className="w-full h-[200px] object-cover"
             />
 
-            <div className="p-4">
-              <h2 className="font-bold text-lg mb-2">{item.title}</h2>
+            {/* CONTENT */}
 
-              <p className="text-sm text-gray-500 mb-3">
+            <div className="p-4">
+              <h2 className="font-bold text-lg mb-2 line-clamp-2">
+                {item.title}
+              </h2>
+
+              <p className="text-sm text-gray-400 mb-3">
                 {new Date(item.created_at).toLocaleDateString("tr-TR")}
               </p>
 
+              {/* SUMMARY */}
+
+              <p className="text-sm text-gray-300 mb-4 line-clamp-3">
+                {item.summary}
+              </p>
+
               <Link
-                href={`/${item.league_slug}/${item.team}/${item.slug}`}
-                className="text-green-600 font-semibold"
+                href={`/${item.league_slug}/${item.team_slug}/${item.slug}`}
+                className="text-yellow-400 font-semibold hover:underline"
               >
                 Devamını oku →
               </Link>

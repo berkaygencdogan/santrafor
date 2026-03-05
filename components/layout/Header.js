@@ -96,10 +96,10 @@ export default function Header() {
           <div className="absolute left-1/2 -translate-x-1/2 -top-11">
             <Link href="/">
               <img
-                src="https://i.hizliresim.com/8qjtfmq.png"
+                src="https://i.hizliresim.com/f4doehc.png"
                 alt="Santrafor"
                 className="object-contain"
-                width={150}
+                width={175}
               />
             </Link>
           </div>

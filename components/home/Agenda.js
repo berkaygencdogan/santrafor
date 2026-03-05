@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 export default function Agenda({ posts = [], title }) {
   const router = useRouter();
 
-  if (!posts.length) return null;
+  if (!posts?.length) return null;
+
+  const goPost = (p) => {
+    router.push(
+      `/${p.league_slug || p.sport || "futbol"}/${p.team_slug || "genel"}/${p.slug}`,
+    );
+  };
 
   return (
     <section className="w-full bg-[#0f172a] text-white py-10 mt-10">
@@ -16,44 +22,40 @@ export default function Agenda({ posts = [], title }) {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* 🔥 BÜYÜK HABER */}
+          {/* BÜYÜK HABER */}
           <div
-            onClick={() =>
-              router.push(
-                `/${posts[0].league_slug || "futbol"}/${posts[0].team || "genel"}/${posts[0].slug}`,
-              )
-            }
+            onClick={() => goPost(posts[0])}
             className="lg:col-span-2 relative rounded-2xl overflow-hidden cursor-pointer group"
           >
             <img
-              src={posts[0].image}
+              src={posts[0].cover_image}
               className="w-full h-[420px] object-cover group-hover:scale-105 transition"
               alt={posts[0].title}
             />
+
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+
             <h3 className="absolute bottom-4 left-4 right-4 font-extrabold text-2xl">
               {posts[0].title}
             </h3>
           </div>
 
-          {/* 🔥 SAĞ KÜÇÜKLER */}
+          {/* SAĞ KÜÇÜKLER */}
           <div className="space-y-4">
             {posts.slice(1, 5).map((item) => (
               <div
                 key={item.id}
-                onClick={() =>
-                  router.push(
-                    `/${item.league_slug || "futbol"}/${item.team || "genel"}/${item.slug}`,
-                  )
-                }
+                onClick={() => goPost(item)}
                 className="relative rounded-xl overflow-hidden cursor-pointer group"
               >
                 <img
-                  src={item.image}
+                  src={item.cover_image}
                   className="w-full h-[120px] object-cover group-hover:scale-105 transition"
                   alt={item.title}
                 />
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+
                 <p className="absolute bottom-2 left-2 right-2 text-sm font-semibold">
                   {item.title}
                 </p>

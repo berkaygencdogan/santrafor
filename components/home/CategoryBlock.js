@@ -1,40 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NewsCard from "./NewsCard";
 import SideMiniCards from "./SideMiniCards";
 import Agenda from "./Agenda";
 import MediaSection from "./MediaSection";
 
-export default function CategoryBlock({ cat, title }) {
+export default function CategoryBlock({ cat = {}, title }) {
+  const posts = cat.posts || [];
+  const agenda = cat.agenda || [];
+  const sideNews = cat.sideNews || [];
+  const videos = cat.videos || [];
+  const gallery = cat.gallery || [];
+
   const [visible, setVisible] = useState(9);
 
+  useEffect(() => {
+    setVisible(9);
+  }, [posts]);
+
   const handleToggle = () => {
-    if (visible >= (cat.posts?.length || 0)) {
-      setVisible(9); // reset
+    if (visible >= posts.length) {
+      setVisible(9);
     } else {
       setVisible((prev) => prev + 9);
     }
   };
 
-  const isAllVisible = visible >= (cat.posts?.length || 0);
+  const isAllVisible = visible >= posts.length;
 
   return (
     <>
-      <Agenda posts={cat.agenda || []} title={title} />
+      {/* AGENDA */}
+      <Agenda posts={agenda} title={title} />
 
       <div className="max-w-[1400px] mx-auto px-4 mt-4">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-8">
           {/* SOL */}
           <div>
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
-              {(cat.posts || []).slice(0, visible).map((item) => (
+              {posts.slice(0, visible).map((item) => (
                 <NewsCard key={item.id} item={item} />
               ))}
             </div>
 
-            {/* 🔥 BUTTON */}
-            {(cat.posts?.length || 0) > 9 && (
+            {/* BUTTON */}
+            {posts.length > 9 && (
               <div className="flex justify-center mt-8">
                 <button
                   onClick={handleToggle}
@@ -47,11 +58,12 @@ export default function CategoryBlock({ cat, title }) {
           </div>
 
           {/* SAĞ */}
-          <SideMiniCards posts={cat.sideNews || []} />
+          <SideMiniCards posts={sideNews} />
         </div>
       </div>
 
-      <MediaSection videos={cat.videos || []} gallery={cat.gallery || []} />
+      {/* VIDEO + GALERİ */}
+      <MediaSection videos={videos} gallery={gallery} />
     </>
   );
 }

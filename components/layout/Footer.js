@@ -1,11 +1,11 @@
 export default function Footer() {
   return (
-    <footer className="bg-black text-white mt-20">
+    <footer className="bg-black text-white mt-20 border-t-1">
       <div className="max-w-7xl mx-auto px-4 py-10 grid md:grid-cols-3 gap-6">
         {/* LOGO */}
         <div>
           <img
-            src="https://i.hizliresim.com/8qjtfmq.png"
+            src="https://i.hizliresim.com/f4doehc.png"
             alt="Santrafor Logo"
             className="w-32"
           />

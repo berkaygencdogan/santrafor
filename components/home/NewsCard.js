@@ -17,29 +17,28 @@ function getExcerpt(content, wordCount = 10) {
 
 export default function NewsCard({ item }) {
   const router = useRouter();
+
+  const goPost = () => {
+    router.push(
+      `/${item.league_slug || item.sport || "futbol"}/${item.team || "genel"}/${item.slug}`,
+    );
+  };
+
   return (
     <div
-      onClick={() =>
-        router.push(
-          `/${item.category?.toLowerCase() || item.league_slug || item.sport || "futbol"}/${item.team || "genel"}/${item.slug}`,
-        )
-      }
-      className="cursor-pointer rounded-xl overflow-hidden group"
+      onClick={goPost}
+      className="cursor-pointer rounded-xl overflow-hidden group bg-[#0f172a] max-h-[350px]"
     >
       <img
-        src={item.image}
+        src={item.cover_image || item.image}
         className="w-full h-[220px] object-cover group-hover:scale-105 transition"
         alt={item.title}
       />
 
       <div className="p-3">
-        <p className="text-xs text-gray-400">{item.category}</p>
+        <p className="text-xs text-gray-400">{item.sport?.toUpperCase()}</p>
 
-        <h3 className="font-bold">{item.title}</h3>
-
-        <p className="text-sm text-gray-400 mt-2 leading-snug">
-          {getExcerpt(item.content, 10)}
-        </p>
+        <h3 className="font-bold text-white mt-1">{item.title}</h3>
       </div>
     </div>
   );

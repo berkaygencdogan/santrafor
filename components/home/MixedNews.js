@@ -12,13 +12,13 @@ export default function MixedNews({ posts = [] }) {
           key={item.id}
           onClick={() =>
             router.push(
-              `/${item.league_slug || "futbol"}/${item.team || "genel"}/${item.slug}`,
+              `/${item.league_slug || "futbol"}/${item.team_slug || "genel"}/${item.slug}`,
             )
           }
           className="relative rounded-xl overflow-hidden group cursor-pointer"
         >
           <img
-            src={item.image}
+            src={item.cover_image}
             className="w-full h-[220px] object-cover group-hover:scale-105 transition duration-300"
             alt={item.title}
           />
@@ -26,7 +26,7 @@ export default function MixedNews({ posts = [] }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
 
           <span className="absolute bottom-16 left-3 text-xs bg-black/70 text-white px-2 py-1 rounded">
-            {item.category}
+            {item.sport?.toUpperCase()}
           </span>
 
           <h3 className="absolute bottom-3 left-3 right-3 text-white font-semibold text-sm">

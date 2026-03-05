@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function CategorySlider({ posts = [] }) {
   const router = useRouter();
+  const pathname = usePathname();
 
-  // 🔥 sadece 10 post
   const limitedPosts = posts.slice(0, 10);
 
   const [active, setActive] = useState(0);
@@ -14,7 +14,17 @@ export default function CategorySlider({ posts = [] }) {
 
   const current = limitedPosts[active];
 
-  // 🔥 AUTO SLIDE
+  const getImage = (item) => item.image || item.cover_image;
+
+  const goToNews = (slug) => {
+    const parts = pathname.split("/");
+    parts[parts.length - 1] = slug;
+
+    const newUrl = parts.join("/");
+
+    router.push(newUrl);
+  };
+
   useEffect(() => {
     if (!limitedPosts.length) return;
 
@@ -39,10 +49,10 @@ export default function CategorySlider({ posts = [] }) {
 
   return (
     <div className="w-full">
-      {/* 🔥 MAIN SLIDER */}
+      {/* MAIN */}
       <div
         className="relative rounded-2xl overflow-hidden h-[450px] cursor-pointer"
-        onClick={() => router.push(current.slug)}
+        onClick={() => goToNews(current.slug)}
       >
         <div
           key={active}
@@ -50,7 +60,11 @@ export default function CategorySlider({ posts = [] }) {
           ${direction === "right" ? "animate-slideRight" : "animate-slideLeft"}
         `}
         >
-          <img src={current.image} className="w-full h-full object-cover" />
+          <img
+            src={getImage(current)}
+            className="w-full h-full object-cover"
+            alt={current.title}
+          />
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
 
@@ -59,7 +73,7 @@ export default function CategorySlider({ posts = [] }) {
           </h2>
         </div>
 
-        {/* 🔥 ARROWS */}
+        {/* ARROWS */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -81,7 +95,7 @@ export default function CategorySlider({ posts = [] }) {
         </button>
       </div>
 
-      {/* 🔥 THUMBNAILS */}
+      {/* THUMBS */}
       <div className="mt-3 ml-4 mb-3 overflow-hidden">
         <div className="flex gap-2">
           {limitedPosts.map((item, i) => (
@@ -91,6 +105,7 @@ export default function CategorySlider({ posts = [] }) {
                 e.stopPropagation();
                 setDirection(i > active ? "right" : "left");
                 setActive(i);
+                goToNews(item.slug);
               }}
               onMouseEnter={() => {
                 setDirection(i > active ? "right" : "left");
@@ -103,11 +118,11 @@ export default function CategorySlider({ posts = [] }) {
               }`}
             >
               <img
-                src={item.image}
+                src={getImage(item)}
                 className="w-[90px] h-[60px] object-cover"
+                alt={item.title}
               />
 
-              {/* 🔥 aktif thumb progress bar */}
               {i === active && (
                 <div className="absolute left-0 bottom-0 w-full h-[3px] bg-white/20">
                   <div
