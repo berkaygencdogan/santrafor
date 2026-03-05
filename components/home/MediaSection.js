@@ -137,7 +137,7 @@ export default function MediaSection({ videos = [], gallery = [] }) {
                 alt={curG.title}
               />
 
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="absolute -translate-y-15 bg-black/60 p-4">
                 <p className="text-white font-bold">{curG.title}</p>
               </div>
 
