@@ -93,13 +93,13 @@ export default function Header() {
           </nav>
 
           {/* LOGO (X ortalı, Y en üstte) */}
-          <div className="absolute left-1/2 -translate-x-1/2 -top-11">
+          <div className="absolute left-1/2 -translate-x-1/2 -top-5">
             <Link href="/">
               <img
-                src="https://i.hizliresim.com/f4doehc.png"
+                src="https://i.hizliresim.com/efxylck.png"
                 alt="Santrafor"
                 className="object-contain"
-                width={175}
+                width={125}
               />
             </Link>
           </div>

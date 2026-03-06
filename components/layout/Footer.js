@@ -5,7 +5,7 @@ export default function Footer() {
         {/* LOGO */}
         <div>
           <img
-            src="https://i.hizliresim.com/f4doehc.png"
+            src="https://i.hizliresim.com/efxylck.png"
             alt="Santrafor Logo"
             className="w-32"
           />

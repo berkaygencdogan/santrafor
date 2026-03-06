@@ -104,9 +104,15 @@ export default function NewsDetailPage() {
               {new Date(news.created_at).toLocaleDateString("tr-TR")}
             </p>
 
-            <img src={news.cover_image} className="w-full rounded-xl mb-6" />
+            <img
+              src={news.cover_image}
+              className="max-w-[760px] max-h-[570px] w-auto h-auto object-contain rounded-xl mb-6 mx-auto"
+            />
 
-            <div dangerouslySetInnerHTML={{ __html: news.content }} />
+            <div
+              className="news-content"
+              dangerouslySetInnerHTML={{ __html: news.content }}
+            />
           </div>
         ))}
 
