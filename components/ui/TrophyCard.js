@@ -1,9 +1,14 @@
 const getLogo = (t) => {
-  return t.league?.image_path || t.team?.image_path || "/placeholder.png";
+  return (
+    t.league?.image_path ||
+    t.trophy?.image_path ||
+    t.team?.image_path ||
+    "/placeholder.png"
+  );
 };
 
 const getName = (t) => {
-  return t.league?.name || t.trophy?.name || "Unknown";
+  return t.league?.name || t.trophy?.name || "Unknown Trophy";
 };
 
 export const TrophyCard = ({ t }) => {
@@ -24,13 +29,13 @@ export const TrophyCard = ({ t }) => {
         </span>
       </div>
 
-      {/* LEAGUE LOGO */}
+      {/* LOGO */}
       <div className="flex justify-center mb-2">
-        <img src={t.league?.image_path} className="w-10 h-10 object-contain" />
+        <img src={getLogo(t)} className="w-10 h-10 object-contain" />
       </div>
 
       {/* NAME */}
-      <p className="font-semibold text-sm">{t.league?.name}</p>
+      <p className="font-semibold text-sm">{getName(t)}</p>
 
       {/* YEAR */}
       <p className="text-gray-500 text-xs mt-1">{t.season?.name}</p>
