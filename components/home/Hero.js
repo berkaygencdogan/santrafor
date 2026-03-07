@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Hero({ sliders = [], featured = [] }) {
-  console.log("a", sliders);
   const router = useRouter();
   const [active, setActive] = useState(0);
 
@@ -29,7 +28,7 @@ export default function Hero({ sliders = [], featured = [] }) {
   };
 
   return (
-    <section className="bg-[#0b1220]">
+    <section className="">
       <div className="max-w-[1400px] mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-6">
           {/* SOL BÜYÜK */}
@@ -75,7 +74,7 @@ export default function Hero({ sliders = [], featured = [] }) {
           </div>
 
           {/* SAĞ BLOK */}
-          <div className="rounded-2xl bg-[#0f172a] p-5">
+          <div className="rounded-2xl p-5">
             {/* ÜST FEATURED */}
             {featured[0] && (
               <div

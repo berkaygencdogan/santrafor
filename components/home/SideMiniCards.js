@@ -23,7 +23,7 @@ export default function SideMiniCards({ posts = [] }) {
         <div
           key={item.id}
           onClick={() => goPost(item)}
-          className="flex gap-2 p-2 border rounded-lg cursor-pointer hover:shadow transition"
+          className="flex gap-2 p-2 border rounded-lg cursor-pointer hover:shadow transition border-1 border-black"
         >
           <img
             src={item.cover_image}
@@ -32,7 +32,9 @@ export default function SideMiniCards({ posts = [] }) {
           />
 
           <div className="flex flex-col justify-between">
-            <p className="text-xs font-semibold leading-snug">{item.title}</p>
+            <p className="text-xs font-semibold leading-snug text-black">
+              {item.title}
+            </p>
 
             {item.created_at && (
               <p className="text-[11px] text-gray-500">

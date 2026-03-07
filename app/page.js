@@ -1,5 +1,6 @@
 import CategoryBlock from "@/components/home/CategoryBlock";
 import Hero from "@/components/home/Hero";
+import LastNews from "@/components/home/LastNews";
 import MixedNews from "@/components/home/MixedNews";
 import SideMiniCards from "@/components/home/SideMiniCards";
 
@@ -57,7 +58,7 @@ export default async function Home() {
       <section className="max-w-[1400px] mx-auto px-4 mt-8">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
           <MixedNews posts={mixed} />
-          <SideMiniCards posts={sideNews} />
+          <LastNews posts={sliders} />
         </div>
       </section>
 

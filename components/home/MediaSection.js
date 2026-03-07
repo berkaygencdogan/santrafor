@@ -66,10 +66,10 @@ export default function MediaSection({ videos = [], gallery = [] }) {
         <div>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-1 h-5 bg-red-500 rounded" />
-            <h3 className="font-extrabold text-white">VİDEO</h3>
+            <h3 className="font-extrabold text-black">VİDEO</h3>
           </div>
 
-          <div className="relative group overflow-hidden rounded-xl">
+          <div className="relative group overflow-hidden rounded-xl border-2 border-gray-900">
             {curV ? (
               <>
                 {!videoPlaying ? (
@@ -133,10 +133,10 @@ export default function MediaSection({ videos = [], gallery = [] }) {
         <div>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-1 h-5 bg-red-500 rounded" />
-            <h3 className="font-extrabold text-white">GALERİ</h3>
+            <h3 className="font-extrabold text-black">GALERİ</h3>
           </div>
 
-          <div className="relative group overflow-hidden rounded-xl">
+          <div className="relative group overflow-hidden rounded-xl border-2 border-gray-900">
             {curG ? (
               <>
                 <img
