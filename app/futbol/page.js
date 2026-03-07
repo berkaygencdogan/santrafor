@@ -70,7 +70,7 @@ export default function FutbolPage() {
   }
 
   return (
-    <div className="w-full mx-auto px-4 mt-10 text-white">
+    <div className="w-full mx-auto px-4 mt-10 text-black">
       <h1 className="mx-auto text-center text-3xl font-bold mb-10">
         Futbol Gündemi
       </h1>

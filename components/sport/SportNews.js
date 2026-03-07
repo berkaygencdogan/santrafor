@@ -25,7 +25,7 @@ export default function SportNews({ title, leagueId, sport }) {
       <div className="mb-6 flex items-center justify-between">
         <Link
           href={`/${sport}/${leagueId}`}
-          className="text-2xl font-bold text-white hover:text-yellow-500 transition"
+          className="text-2xl font-bold text-black hover:text-yellow-500 transition"
         >
           {title}
         </Link>

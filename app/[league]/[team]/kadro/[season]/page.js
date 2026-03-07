@@ -93,7 +93,7 @@ export default async function Page({ params }) {
   const leagueId = await getLeagueIdBySlug(API, league);
   if (!leagueId) {
     return (
-      <div className="bg-[#0B1220] min-h-screen text-white p-10">
+      <div className="bg-[#ffffff] min-h-screen text-white p-10">
         Lig bulunamadı: <b>{league}</b>
       </div>
     );
@@ -104,7 +104,7 @@ export default async function Page({ params }) {
 
   if (!foundTeam) {
     return (
-      <div className="bg-[#0B1220] min-h-screen text-white p-10">
+      <div className="bg-[#ffffff] min-h-screen text-white p-10">
         Takım bulunamadı: <b>{team}</b>
       </div>
     );
@@ -133,7 +133,7 @@ export default async function Page({ params }) {
   };
 
   return (
-    <div className="bg-[#0B1220] min-h-screen text-white">
+    <div className="bg-[#ffffff] min-h-screen text-white">
       <div className="max-w-[1400px] mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-6">
           <img

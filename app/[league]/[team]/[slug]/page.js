@@ -93,11 +93,15 @@ export default function NewsDetailPage() {
   const visiblePosts = allPosts.slice(0, visibleCount);
 
   return (
-    <div className="max-w-[1400px] mx-auto px-4 mt-10 grid lg:grid-cols-[1fr_320px] gap-10 text-white">
+    <div className="max-w-[1400px] mx-auto px-4 mt-10 grid lg:grid-cols-[1fr_320px] gap-10 text-black">
       {/* LEFT */}
       <div>
         {visiblePosts.map((news, i) => (
-          <div key={news.id} data-index={i} className="news-item mb-20">
+          <div
+            key={news.id}
+            data-index={i}
+            className="news-item mb-20 text-black"
+          >
             <h1 className="text-4xl font-bold mb-4">{news.title}</h1>
 
             <p className="text-gray-500 mb-6">
@@ -130,8 +134,8 @@ export default function NewsDetailPage() {
 
       {/* RIGHT */}
       <div className="space-y-6 sticky top-24 self-start">
-        <div className="bg-[#1F1F2E] rounded-2xl p-4">
-          <h3 className="font-bold mb-3">Son Eklenenler</h3>
+        <div className=" rounded-2xl p-4">
+          <h3 className="font-bold mb-3 text-black">Son Eklenenler</h3>
 
           {latest.map((item) => (
             <Link
@@ -143,7 +147,7 @@ export default function NewsDetailPage() {
                 src={item.cover_image}
                 className="w-20 h-20 object-cover rounded-lg"
               />
-              <span className="text-sm">{item.title}</span>
+              <span className="text-sm text-black">{item.title}</span>
             </Link>
           ))}
         </div>

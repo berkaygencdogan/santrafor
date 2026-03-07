@@ -44,9 +44,24 @@ export default function Hero({ sliders = [], featured = [] }) {
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-            <h2 className="absolute left-6 bottom-8 right-6 text-white font-extrabold text-4xl leading-tight">
-              {current.title}
-            </h2>
+            <div className="absolute left-6 bottom-8 right-6 text-white">
+              {/* MANŞET TAG */}
+              <span className="inline-block mb-2 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded">
+                MANŞET
+              </span>
+
+              {/* BAŞLIK */}
+              <h2 className="text-4xl lg:text-3xl font-extrabold uppercase tracking-tight leading-tight drop-shadow-lg">
+                {current.title}
+              </h2>
+
+              {/* SPOT */}
+              {current.summary && (
+                <p className="mt-2 text-sm text-white/80 max-w-[700px]">
+                  {current.summary}
+                </p>
+              )}
+            </div>
 
             {/* PROGRESS BAR */}
             <div className="absolute left-0 bottom-0 w-full h-[3px] bg-white/20 overflow-hidden">
@@ -89,7 +104,7 @@ export default function Hero({ sliders = [], featured = [] }) {
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
 
-                <span className="absolute left-3 bottom-12 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                <span className="absolute left-3 bottom-20 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
                   ÖNE ÇIKAN
                 </span>
 

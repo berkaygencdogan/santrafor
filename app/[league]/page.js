@@ -15,7 +15,7 @@ export default function NewsPage() {
 
   return (
     <main className="max-w-[1400px] mx-auto px-4 mt-10 text-white">
-      <h1 className="text-3xl font-bold mb-8">Tüm Haberler</h1>
+      <h1 className="text-3xl font-bold mb-8 text-black">Tüm Haberler</h1>
 
       <div className="grid md:grid-cols-3 gap-6">
         {news.map((item) => (

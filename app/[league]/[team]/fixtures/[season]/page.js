@@ -82,7 +82,7 @@ export default async function Page({ params }) {
   }
 
   return (
-    <div className="bg-[#0B1220] min-h-screen text-white">
+    <div className="bg-[#ffffff] min-h-screen text-white">
       {/* HEADER */}
       <div className="bg-gradient-to-r from-black via-[#0f172a] to-[#111827] py-10 border-b border-white/10">
         <div className="max-w-[1200px] mx-auto px-4 flex items-center gap-6">

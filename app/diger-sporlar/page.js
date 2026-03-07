@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function OtherSportsPage() {
   return (
-    <div className="bg-[#0B1220] min-h-screen text-white">
+    <div className="bg-[#ffffff] min-h-screen text-white">
       <div className="max-w-[1400px] mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold mb-8">Diğer Sporlar</h1>
 

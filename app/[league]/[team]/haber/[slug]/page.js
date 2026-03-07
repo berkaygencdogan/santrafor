@@ -23,7 +23,7 @@ export default function Page({ params }) {
   }
 
   return (
-    <div className="bg-[#0B1220] min-h-screen text-white">
+    <div className="bg-[#ffffff] min-h-screen text-white">
       {/* BREADCRUMB */}
       <div className="max-w-[1200px] mx-auto px-4 py-6 text-sm text-gray-400">
         <Link href="/">Anasayfa</Link> /{" "}

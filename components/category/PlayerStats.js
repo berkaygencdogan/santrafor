@@ -19,9 +19,9 @@ export default function PlayerStats({ squad = [], teamName }) {
   return (
     <div className="max-w-[1400px] mx-auto px-4 mt-10 grid lg:grid-cols-[1fr_2fr] gap-6">
       {/* 🔥 SOL - TOP 3 */}
-      <div className="space-y-4">
-        <div className="mb-3">
-          <span className="inline-block bg-yellow-400/10 text-yellow-400 text-xs font-bold px-3 py-1 rounded-full mb-2">
+      <div className="space-y-4 bg-black">
+        <div className="mb-3 ">
+          <span className="inline-block px-10 bg-yellow-400/10 text-yellow-400 text-xs font-bold mt-2 py-1 rounded-full mb-2">
             ÖNE ÇIKAN
           </span>
 
@@ -34,7 +34,7 @@ export default function PlayerStats({ squad = [], teamName }) {
         {players.slice(0, 6).map((p, i) => (
           <div
             key={i}
-            className="flex items-center gap-3 bg-[#111827] p-3 rounded-xl border border-white/10"
+            className="flex items-center gap-3 bg-[#111827] p-3 rounded-xl border border-white/10 mb-3"
           >
             <img
               src={p.photo}

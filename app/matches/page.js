@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
+/* ================= POLL ================= */
+
 function usePoll(url, { interval = 20000 } = {}) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -23,21 +25,20 @@ function usePoll(url, { interval = 20000 } = {}) {
     load();
     t = setInterval(load, interval);
     return () => clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url, interval]);
 
   return { data, loading, refetch: load };
 }
+
+/* ================= TIME ================= */
 
 function normalizeUtcIso(dateStr) {
   if (!dateStr) return null;
 
   let s = String(dateStr).trim();
 
-  // "2026-02-23 20:00:00" -> "2026-02-23T20:00:00"
   if (s.includes(" ") && !s.includes("T")) s = s.replace(" ", "T");
 
-  // Eğer timezone bilgisi yoksa (Z veya +03:00 gibi) -> UTC kabul edip Z ekle
   const hasTZ = /([zZ]|[+\-]\d{2}:\d{2})$/.test(s);
   if (!hasTZ) s += "Z";
 
@@ -57,6 +58,8 @@ function formatTimeTR(isoLike) {
     timeZone: "Europe/Istanbul",
   });
 }
+
+/* ================= FAVORITE ================= */
 
 function FavoriteStar({ id }) {
   const key = "fav_matches";
@@ -80,8 +83,6 @@ function FavoriteStar({ id }) {
     <button
       onClick={toggle}
       className="grid h-8 w-8 place-items-center rounded-lg border border-gray-200 hover:bg-gray-50"
-      title="Favori"
-      aria-label="Favori"
       type="button"
     >
       <span className={fav ? "text-yellow-500" : "text-gray-400"}>★</span>
@@ -89,11 +90,12 @@ function FavoriteStar({ id }) {
   );
 }
 
+/* ================= TEAM ================= */
+
 function TeamCell({ team }) {
   return (
     <div className="flex items-center gap-2 min-w-0">
       {team?.logo ? (
-        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={team.logo}
           alt={team?.name || ""}
@@ -102,6 +104,7 @@ function TeamCell({ team }) {
       ) : (
         <div className="h-5 w-5 rounded-full bg-gray-200" />
       )}
+
       <span className="truncate text-sm font-medium text-gray-900">
         {team?.name || "-"}
       </span>
@@ -109,12 +112,15 @@ function TeamCell({ team }) {
   );
 }
 
+/* ================= MATCH ROW ================= */
+
 function MatchRow({ m }) {
   const router = useRouter();
 
   const time = formatTimeTR(m.startingAt);
 
   const showScore = m?.score?.home !== null && m?.score?.away !== null;
+
   const homeScore = showScore ? m.score.home : "-";
   const awayScore = showScore ? m.score.away : "-";
 
@@ -125,55 +131,82 @@ function MatchRow({ m }) {
   return (
     <div
       onClick={goDetail}
-      className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition"
+      className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer"
     >
-      <div className="w-20 flex flex-col gap-1">
+      <div className="w-20">
         <div className="text-sm font-semibold text-gray-900">{time}</div>
       </div>
 
       <div className="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-3 min-w-0">
         <TeamCell team={m.home} />
+
         <div className="text-sm font-bold text-gray-900 tabular-nums">
           {homeScore} - {awayScore}
         </div>
-        <div className="flex justify-end min-w-0">
+
+        <div className="flex justify-end">
           <TeamCell team={m.away} />
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        {/* yıldıza tıklayınca sayfa gitmesin */}
-        <div onClick={(e) => e.stopPropagation()}>
-          <FavoriteStar id={m.id} />
-        </div>
+      <div onClick={(e) => e.stopPropagation()}>
+        <FavoriteStar id={m.id} />
       </div>
     </div>
   );
 }
 
-function LeagueSection({ group }) {
-  const { league, matches } = group;
+/* ================= LEAGUE ================= */
+
+function LeagueSection({ league }) {
+  const matches = (league.today || []).map((m) => {
+    const home = m.participants?.find((p) => p.meta?.location === "home");
+    const away = m.participants?.find((p) => p.meta?.location === "away");
+
+    const homeScore =
+      m.scores?.find((s) => s.score?.participant === "home")?.score?.goals ??
+      null;
+
+    const awayScore =
+      m.scores?.find((s) => s.score?.participant === "away")?.score?.goals ??
+      null;
+
+    return {
+      id: m.id,
+      startingAt: m.starting_at,
+      home: {
+        name: home?.name,
+        logo: home?.image_path,
+      },
+      away: {
+        name: away?.name,
+        logo: away?.image_path,
+      },
+      score: {
+        home: homeScore,
+        away: awayScore,
+      },
+    };
+  });
+
   return (
     <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
       <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-4 py-2">
-        {league?.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
+        {league?.image_path ? (
           <img
-            src={league.image}
-            alt={league?.name || ""}
+            src={league.image_path}
+            alt={league.name}
             className="h-5 w-5 rounded"
           />
         ) : (
           <div className="h-5 w-5 rounded bg-gray-200" />
         )}
-        <div className="text-sm font-bold text-gray-900">{league?.name}</div>
-        {league?.country ? (
-          <div className="ml-2 text-xs text-gray-500">{league.country}</div>
-        ) : null}
+
+        <div className="text-sm font-bold text-gray-900">{league.name}</div>
       </div>
 
       <div className="divide-y divide-gray-100">
-        {(matches || []).map((m) => (
+        {matches.map((m) => (
           <MatchRow key={m.id} m={m} />
         ))}
       </div>
@@ -181,13 +214,13 @@ function LeagueSection({ group }) {
   );
 }
 
-export default function MatchesPage() {
-  const [tab, setTab] = useState("today"); // today | live
+/* ================= PAGE ================= */
 
-  // Türkiye saatiyle bugünün tarihi (ISO date)
+export default function MatchesPage() {
+  const [tab, setTab] = useState("today");
+
   const todayStr = useMemo(() => {
     const now = new Date();
-    // basit: local date -> YYYY-MM-DD
     const yyyy = now.getFullYear();
     const mm = String(now.getMonth() + 1).padStart(2, "0");
     const dd = String(now.getDate()).padStart(2, "0");
@@ -216,10 +249,10 @@ export default function MatchesPage() {
                 : "text-gray-700 hover:bg-gray-50"
             }`}
             onClick={() => setTab("today")}
-            type="button"
           >
             Bugün
           </button>
+
           <button
             className={`px-4 py-2 text-sm font-semibold ${
               tab === "live"
@@ -227,28 +260,27 @@ export default function MatchesPage() {
                 : "text-gray-700 hover:bg-gray-50"
             }`}
             onClick={() => setTab("live")}
-            type="button"
           >
             Canlı
           </button>
         </div>
       </div>
 
-      {loading && !data?.length ? (
+      {loading && !data?.length && (
         <div className="rounded-xl border border-gray-200 bg-white p-6 text-sm text-gray-600">
           Yükleniyor...
         </div>
-      ) : null}
+      )}
 
-      {!loading && (!data || data.length === 0) ? (
+      {!loading && (!data || data.length === 0) && (
         <div className="rounded-xl border border-gray-200 bg-white p-6 text-sm text-gray-600">
           Maç bulunamadı.
         </div>
-      ) : null}
+      )}
 
       <div className="space-y-4">
-        {(data || []).map((g) => (
-          <LeagueSection key={g?.league?.id || g?.league?.name} group={g} />
+        {(data || []).map((league) => (
+          <LeagueSection key={league.id} league={league} />
         ))}
       </div>
     </div>

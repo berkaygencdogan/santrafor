@@ -82,7 +82,7 @@ export default async function Page({ params }) {
   const featuredPosts = posts.slice(5, 9); // sonraki 4
 
   return (
-    <div className="bg-[#0B1220] min-h-screen text-white">
+    <div className="bg-[#ffffff] min-h-screen text-white">
       <div className="bg-gradient-to-r from-black via-[#0f172a] to-[#111827] py-10 border-b border-white/10">
         <div className="max-w-[1400px] justify-between mx-auto px-4 flex flex-col lg:flex-row gap-8 items-center">
           <div className="flex items-center gap-6 ">
